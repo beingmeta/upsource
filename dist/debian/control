@@ -1,0 +1,22 @@
+Source: sourcetab
+Priority: optional
+Maintainer: Ken Haase <kh@beingmeta.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev, debsigs, devscripts
+Standards-Version: 3.9.4
+Section: libs
+Homepage: http://www.libu8.org/
+
+Package: sourcetab-systemd
+Architecture: any
+Depends: sourcetab ()
+Description:
+ Adds a systemd unit for updating /etc/srctab on boot
+
+Package: sourcetab
+Section: libs
+Architecture: any
+Depends: ${misc:Depends}
+Description:
+ Provides for a configuration file which maps file system 
+ locations to various sources (e.g. git or svn).
+
