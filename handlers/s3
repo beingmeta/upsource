@@ -1,10 +1,6 @@
 MOUNT=$1
 SOURCE=$2
-if test -d $MOUNT/.svn; then
-   cd $1; svn update;
-else
-   svn checkout $SOURCE $MOUNT;
-fi;
+aws s3 sync $SOURCE $MOUNT
 if "${OWNER}" != ""; then
    chown -R ${OWNER} ${MOUNT};
 fi
@@ -14,3 +10,4 @@ fi
 if "${MODE}" != ""; then
    chmod -R ${MODE} ${MOUNT};
 fi
+
