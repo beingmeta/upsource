@@ -1,0 +1,7 @@
+MOUNT=$1
+SOURCE=$2
+if test -d $MOUNT/.git; then
+   cd $1; git pull;
+else
+   git clone $SOURCE $MOUNT;
+fi;

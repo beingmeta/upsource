@@ -1,0 +1,13 @@
+MOUNT=$1
+SOURCE=$2
+if test -L $MOUNT && test `readlink $MOUNT` = $SOURCE; then
+   echo "Already linked";
+elif test -f $MOUNT || test -d $MOUNT; then
+   if test -f $MOUNT.bak; then
+     echo "Not overwriting $MOUNT with existing $MOUNT.bak";
+     exit;
+   fi;
+   mv $MOUNT $MOUNT.bak;
+else
+  ln -sf $SOURCE $MOUNT;
+fi;

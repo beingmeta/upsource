@@ -1,0 +1,9 @@
+SOURCETAB=${1:-/etc/srctab}
+THISDIR=`dirname $0`
+LIBROOT=${LIBROOT:-$THISDIR}
+cd ${LIBROOT};
+grep -v "^\s*$" ${SOURCETAB} | awk -f sourcetab.awk | bash
+
+
+
+
