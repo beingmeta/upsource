@@ -1,9 +1,16 @@
 MOUNT=$1
 SOURCE=$2
+# ?? Might need to handle cases where $BRANCH changes
 if test -d $MOUNT/.git; then
-   cd $1; git pull;
-else
+   if test -z ${BRANCH}; then
+     cd $1; git pull;
+   else
+     cd $1; git pull; git checkout ${BRANCH}; git pull
+   fi;	
+elif test -z "$BRANCH"; then
    git clone $SOURCE $MOUNT;
+else
+   git clone -b ${BRANCH} $SOURCE $MOUNT;
 fi;
 if "${OWNER}" != ""; then
    chown -R ${OWNER} ${MOUNT};
