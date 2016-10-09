@@ -23,28 +23,28 @@ Description:
 Package: upsource-git
 Section: libs
 Architecture: all
-Depends: upsource-core git ${misc:Depends}
+Depends: upsource-core, git
 Description:
   Provides the upsource handler for git
 
 Package: upsource-subversion
 Section: libs
 Architecture: all
-Depends: upsource-core subversion ${misc:Depends}
+Depends: upsource-core, subversion
 Description:
   Provides the upsource handler for subversion
 
 Package: upsource-s3
 Section: libs
 Architecture: all
-Depends: upsource-core awscli ${misc:Depends}
+Depends: upsource-core, awscli
 Description:
   Provides the upsource handler for Amazon S3 (using awscli)
 
 Package: upsource
 Section: libs
 Architecture: all
-Depends: upsource-core upsource-git upsource-subversion
+Depends: upsource-core, upsource-git, upsource-subversion
 Description:
   Metapackage including common upscore handlers
 

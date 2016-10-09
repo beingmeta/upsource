@@ -55,6 +55,10 @@ dist/.unpacked:
 debclean:
 	rm -rf dist/upsource-* dist/.unpacked
 debstart: dist/.unpacked
+
+debfresh: debclean
+	make debstart
+
 debmake: debstart
 	cd dist/${VERSION}; dpkg-buildpackage -A -us -uc -sa -rfakeroot
 
