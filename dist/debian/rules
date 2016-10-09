@@ -1,8 +1,11 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-build-indep binary-indep build:
+build:
 	make PREFIX=/usr RUN=/var/run SRCTAB=/etc/srctab
+build-arch build-indep binary-arch binary-indep: build
+
+binary: binary-arch binary-indep
 
 clean:
 	rm -f upsource sourcetab.awk .prefix .run .srctab
