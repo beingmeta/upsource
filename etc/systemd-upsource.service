@@ -16,7 +16,7 @@ Requires=network.target local-fs.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/lib/sourcetab/sourcetab /etc/srctab
+ExecStart=/usr/bin/upsource /etc/srctab
 
 [Install]
 WantedBy=multi-user.target

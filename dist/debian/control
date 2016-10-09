@@ -6,12 +6,6 @@ Standards-Version: 3.9.4
 Section: admin
 Homepage: http://www.libu8.org/
 
-Package: upsource-systemd
-Architecture: all
-Depends: upsource-core
-Description:
- Adds a systemd unit for updating /etc/srctab on boot
-
 Package: upsource-core
 Section: admin
 Architecture: all
@@ -48,3 +42,23 @@ Depends: upsource-core, upsource-git, upsource-subversion
 Description:
   Metapackage including common upscore handlers
 
+Package: upsource-systemd
+Architecture: all
+Depends: upsource-core
+Conflicts: upsource-upstart, upsource-sysv
+Description:
+ Adds a systemd unit for updating /etc/srctab on boot
+
+Package: upsource-sysv
+Architecture: all
+Depends: upsource-core
+Conflicts: upsource-systemd, upsource-upstart
+Description:
+ Adds a systemd unit for updating /etc/srctab on boot
+
+Package: upsource-upstart
+Architecture: all
+Depends: upsource-core
+Conflicts: upsource-systemd, upsource-sysv
+Description:
+ Adds a systemd unit for updating /etc/srctab on boot

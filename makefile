@@ -34,6 +34,9 @@ installdirs:
 	${INSTALLDIR} ${DESTDIR}${RUNDIR}
 	${INSTALLDIR} ${DESTDIR}${LIBDIR}
 	${INSTALLDIR} ${DESTDIR}${LIBDIR}/handlers
+	${INSTALLDIR} ${DESTDIR}/lib/systemd/system
+	${INSTALLDIR} ${DESTDIR}/etc/init.d
+	${INSTALLDIR} ${DESTDIR}/etc/init
 
 install: installdirs build
 	${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
@@ -43,6 +46,9 @@ install: installdirs build
 	${INSTALLBIN} handlers/s3.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLER} config ${DESTDIR}${LIBDIR}/config
 	${INSTALLER} etc/srctab.template ${DESTDIR}${SRCTAB}
+	${INSTALLER} etc/systemd-upsource.service ${DESTDIR}/lib/systemd/system/upsource.service
+	${INSTALLER} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
+	${INSTALLER} etc/upstart-upsource.conf ${DESTDIR}/etc/init/upsource.conf
 
 clean:
 	rm sourceup sourcetab.awk
@@ -59,7 +65,7 @@ dist/debs.built: dist/debs.setup
 	touch $@;
 
 dist/debs.signed: dist/debs.built
-	(cd staging; debsign --re-sign -k${GPGID} libu8_@U8VERSION@*.changes) && \
+	(cd dist; debsign --re-sign -k${GPGID} upsource_*_all.changes) && \
 	touch $@;
 debian: dist/debs.signed
 
