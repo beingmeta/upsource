@@ -38,7 +38,7 @@ install: installdirs build
 	${INSTALLBIN} handlers/svn.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/s3.upsource ${DESTDIR}${LIBDIR}/handlers
-	${INSTALLER} config ${DESTDIR}{$LIBDIR}/config
+	${INSTALLER} config ${DESTDIR}${LIBDIR}/config
 	${INSTALLER} etc/srctab.template ${DESTDIR}${SRCTAB}
 
 clean:
