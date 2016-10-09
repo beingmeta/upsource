@@ -1,16 +1,11 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-build:
+%:
+	dh $@
+
+override_dh_auto_configure:
 	make PREFIX=/usr RUN=/var/run SRCTAB=/etc/srctab
-	make install
-
-build-arch build-indep binary-arch binary-indep: build
-
-binary: binary-arch binary-indep
 
 clean:
 	rm -f upsource sourcetab.awk .prefix .run .srctab
-
-install:
-	make install
