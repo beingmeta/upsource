@@ -10,7 +10,7 @@ RUNDIR=${RUN}/upsource
 BINDIR=${PREFIX}/bin
 INSTALLDIR=install -d
 INSTALLBIN=install -m 555
-INSTALLER=install -D
+INSTALLFILE=install -D -m 644
 
 build: upsource sourcetab.awk .prefix .run .srctab
 
@@ -40,15 +40,16 @@ installdirs:
 
 install: installdirs build
 	${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
+	${INSTALLFILE} upsource.awk ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/svn.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/s3.upsource ${DESTDIR}${LIBDIR}/handlers
-	${INSTALLER} config ${DESTDIR}${LIBDIR}/config
-	${INSTALLER} etc/srctab.template ${DESTDIR}${SRCTAB}
-	${INSTALLER} etc/systemd-upsource.service ${DESTDIR}/lib/systemd/system/upsource.service
-	${INSTALLER} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
-	${INSTALLER} etc/upstart-upsource.conf ${DESTDIR}/etc/init/upsource.conf
+	${INSTALLFILE} config ${DESTDIR}${LIBDIR}/config
+	${INSTALLFILE} etc/srctab.template ${DESTDIR}${SRCTAB}
+	${INSTALLFILE} etc/systemd-upsource.service ${DESTDIR}/lib/systemd/system/upsource.service
+	${INSTALLBIN} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
+	${INSTALLFILE} etc/upstart-upsource.conf ${DESTDIR}/etc/init/upsource.conf
 
 clean:
 	rm sourceup sourcetab.awk
