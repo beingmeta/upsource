@@ -1,6 +1,7 @@
 MOUNT=$1
 SOURCE=$2
-aws s3 sync $SOURCE $MOUNT
+S3FLAGS=
+aws ${S3FLAGS} s3 sync ${SOURCE} ${MOUNT}
 if "${OWNER}" != ""; then
    chown -R ${OWNER} ${MOUNT};
 fi

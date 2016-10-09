@@ -1,9 +1,13 @@
 MOUNT=$1
 SOURCE=$2
-if test -d $MOUNT/.svn; then
-   cd $1; svn update;
+SVNFLAGS=
+OWNER=
+GROUP=
+MODE=
+if test -d ${MOUNT}/.svn; then
+   cd ${MOUNT}; svn ${SVNFLAGS} update;
 else
-   svn checkout $SOURCE $MOUNT;
+   svn ${SVNFLAGS} checkout ${SOURCE} ${MOUNT};
 fi;
 if "${OWNER}" != ""; then
    chown -R ${OWNER} ${MOUNT};
