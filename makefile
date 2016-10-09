@@ -30,8 +30,8 @@ installdirs:
 	${INSTALLDIR} ${LIBDIR}
 	${INSTALLDIR} ${LIBDIR}/handlers
 
-install: installdirs
-	${INSTALLBIN} sourceup ${PREFIX}/bin
+install: installdirs build
+	${INSTALLBIN} upsource ${PREFIX}/bin
 	${INSTALLBIN} handlers/git.upsource ${LIBDIR}/handlers
 	${INSTALLBIN} handlers/svn.upsource ${LIBDIR}/handlers
 	${INSTALLBIN} handlers/link.upsource ${LIBDIR}/handlers
