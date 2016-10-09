@@ -2,6 +2,7 @@ PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo -n /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo -n /var/run; fi)
 SRCTAB=$(shell if test -f .srctab; then cat .srctab; else echo -n /etc/srctab; fi)
 VERSION=$(shell etc/gitversion)
+DESTROOT=
 LIBDIR=${PREFIX}/lib/sourcemap
 VARDIR=${VAR}/run/sourcemap
 BINDIR=${PREFIX}/bin
@@ -32,13 +33,13 @@ installdirs:
 	${INSTALLDIR} ${LIBDIR}/handlers
 
 install: installdirs build
-	${INSTALLBIN} upsource ${PREFIX}/bin
-	${INSTALLBIN} handlers/git.upsource ${LIBDIR}/handlers
-	${INSTALLBIN} handlers/svn.upsource ${LIBDIR}/handlers
-	${INSTALLBIN} handlers/link.upsource ${LIBDIR}/handlers
-	${INSTALLBIN} handlers/s3.upsource ${LIBDIR}/handlers
-	${INSTALLER} config ${LIBDIR}/config
-	${INSTALLER} etc/srctab.template ${SRCTAB}
+	${INSTALLBIN} upsource ${DESTROOT}${PREFIX}/bin
+	${INSTALLBIN} handlers/git.upsource ${DESTROOT}${LIBDIR}/handlers
+	${INSTALLBIN} handlers/svn.upsource ${DESTROOT}${LIBDIR}/handlers
+	${INSTALLBIN} handlers/link.upsource ${DESTROOT}${LIBDIR}/handlers
+	${INSTALLBIN} handlers/s3.upsource ${DESTROOT}${LIBDIR}/handlers
+	${INSTALLER} config ${DESTROOT}{$LIBDIR}/config
+	${INSTALLER} etc/srctab.template ${DESTROOT}${SRCTAB}
 
 clean:
 	rm sourceup sourcetab.awk

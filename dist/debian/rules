@@ -3,6 +3,8 @@
 
 build:
 	make PREFIX=/usr RUN=/var/run SRCTAB=/etc/srctab
+	make install
+
 build-arch build-indep binary-arch binary-indep: build
 
 binary: binary-arch binary-indep
