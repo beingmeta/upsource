@@ -3,7 +3,7 @@ Priority: optional
 Maintainer: Ken Haase <kh@beingmeta.com>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, debsigs, devscripts
 Standards-Version: 3.9.4
-Section: libs
+Section: admin
 Homepage: http://www.libu8.org/
 
 Package: upsource-systemd
@@ -13,7 +13,7 @@ Description:
  Adds a systemd unit for updating /etc/srctab on boot
 
 Package: upsource-core
-Section: libs
+Section: admin
 Architecture: all
 Depends: ${misc:Depends}
 Description:
@@ -21,28 +21,28 @@ Description:
  locations to various sources (e.g. git or svn).
 
 Package: upsource-git
-Section: libs
+Section: admin
 Architecture: all
 Depends: upsource-core, git
 Description:
   Provides the upsource handler for git
 
 Package: upsource-subversion
-Section: libs
+Section: admin
 Architecture: all
 Depends: upsource-core, subversion
 Description:
   Provides the upsource handler for subversion
 
 Package: upsource-s3
-Section: libs
+Section: admin
 Architecture: all
 Depends: upsource-core, awscli
 Description:
   Provides the upsource handler for Amazon S3 (using awscli)
 
 Package: upsource
-Section: libs
+Section: admin
 Architecture: all
 Depends: upsource-core, upsource-git, upsource-subversion
 Description:
