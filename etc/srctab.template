@@ -1,0 +1,12 @@
+# This file specifies ways in which the local filesystem is linked to
+#  external sources (or sometimes itself). It is a lightweight way to
+#  specify fileystem setup
+# It consists of a series of lines of the form:
+#  <type> <mountpoint> <remote> [VAR=VAL]*
+# For example:
+#   git /tmp/framerd git@github.com:beingmeta/framerd.git SOMEFLAG=foo
+#   git /tmp/metabooks git@github.com:beingmeta/metabooks.git SOMEFLAG=bar
+#   svn /tmp/ops svn+ssh://dev.beingmeta.com/svn/src/ops
+#   link /tmp/pubtool /tmp/ops/pubtool
+
+

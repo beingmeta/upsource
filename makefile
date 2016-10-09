@@ -1,5 +1,6 @@
 PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo -n /usr; fi)
-VAR=$(shell if test -f .var; then cat .var; else echo -n /var; fi)
+RUN=$(shell if test -f .run; then cat .run; else echo -n /var/run; fi)
+SRCTAB=$(shell if test -f .srctab; then cat .srctab; else echo -n /etc/srctab; fi)
 LIBDIR=${PREFIX}/lib/sourcemap
 VARDIR=${VAR}/run/sourcemap
 BINDIR=${PREFIX}/bin
@@ -7,13 +8,16 @@ INSTALLDIR=install -d
 INSTALLBIN=install -m 555
 INSTALLER=install
 
-build: upsource sourcetab.awk .prefix .var
+build: upsource sourcetab.awk .prefix .var .srctab
 
 .prefix:
 	echo ${PREFIX} > .prefix
 
-.var:
-	echo ${VAR} > .var
+.run:
+	echo ${RUN} > .run
+
+.srctab:
+	echo ${SRCTAB} > .srctab
 
 upsource: upsource.in .prefix
 	sed -e "s:@LIBDIR@:${LIBDIR}:g" -e "s:@VAR@:${VARDIR}:g" < $< > $@
@@ -28,11 +32,12 @@ installdirs:
 
 install: installdirs
 	${INSTALLBIN} sourceup ${PREFIX}/bin
-	${INSTALLBIN} handlers/git ${LIBDIR}/handlers/git
-	${INSTALLBIN} handlers/svn ${LIBDIR}/handlers/svn
-	${INSTALLBIN} handlers/link ${LIBDIR}/handlers/link
-	${INSTALLBIN} handlers/s3 ${LIBDIR}/handlers/s3
+	${INSTALLBIN} handlers/git.upsource ${LIBDIR}/handlers
+	${INSTALLBIN} handlers/svn.upsource ${LIBDIR}/handlers
+	${INSTALLBIN} handlers/link.upsource ${LIBDIR}/handlers
+	${INSTALLBIN} handlers/s3.upsource ${LIBDIR}/handlers
 	${INSTALLER} config ${LIBDIR}/config
+	${INSTALLER} etc/srctab.template ${SRCTAB}
 
 clean:
 	rm sourceup sourcetab.awk
