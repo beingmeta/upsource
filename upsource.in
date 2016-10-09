@@ -1,9 +1,10 @@
+#!/bin/sh
 SOURCETAB=${1:-/etc/srctab}
 generate_commands()
 {
 	if test -f @LIBDIR@/config; then cat @LIBDIR@/config; fi
 	echo "export PATH=@LIBDIR@/handlers:$$PATH";
-	grep -v "^\s*$" | grep -v "^[#;] | awk -f sourcetab.awk
+	grep -v "^\s*$" | grep -v "^[ 	]*[#;]" | awk -f sourcetab.awk
 }
 for pre in @LIBDIR@/handlers/*.pre; do
     if test -x ${pre}; then ${pre}; fi; done
