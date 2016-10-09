@@ -5,6 +5,12 @@ GIT=git ${GITFLAGS}
 OWNER=
 GROUP=
 MODE=
+if test ! -z "${ENVSOURCE}" && test -f ${ENVSOURCE}; then
+  source ${ENVSOURCE};
+fi
+if test -z "${GIT_SSH_COMMAND}" && test ! -z "${SSH_KEY}"; then
+  export GIT_SSH_COMMAND="ssh -i ${SSH_KEY}";
+fi
 # ?? Might need to handle cases where $BRANCH changes
 if test -d $MOUNT/.git; then
    if test -z ${BRANCH}; then
@@ -17,12 +23,12 @@ elif test -z "${BRANCH}"; then
 else
    ${GIT} clone -b ${BRANCH} ${SOURCE} ${MOUNT};
 fi;
-if "${OWNER}" != ""; then
+if test "${OWNER}" != ""; then
    chown -R ${OWNER} ${MOUNT};
 fi;
-if "${GROUP}" != ""; then
+if test "${GROUP}" != ""; then
    chgrp -R ${GROUP} ${MOUNT};
 fi;
-if "${MODE}" != ""; then
+if test "${MODE}" != ""; then
    chmod -R ${MODE} ${MOUNT};
 fi;

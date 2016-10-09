@@ -4,17 +4,23 @@ SVNFLAGS=
 OWNER=
 GROUP=
 MODE=
+if test ! -z "${ENVSOURCE}" && test -f ${ENVSOURCE}; then
+  source ${ENVSOURCE};
+fi
+if test -z "${SVN_SSH}" && test ! -z "${SSH_KEY}"; then
+  export SVN_SSH="ssh -i ${SSH_KEY}";
+fi
 if test -d ${MOUNT}/.svn; then
    cd ${MOUNT}; svn ${SVNFLAGS} update;
 else
    svn ${SVNFLAGS} checkout ${SOURCE} ${MOUNT};
 fi;
-if "${OWNER}" != ""; then
+if test "${OWNER}" != ""; then
    chown -R ${OWNER} ${MOUNT};
 fi
-if "${GROUP}" != ""; then
+if test "${GROUP}" != ""; then
    chgrp -R ${GROUP} ${MOUNT};
 fi
-if "${MODE}" != ""; then
+if test "${MODE}" != ""; then
    chmod -R ${MODE} ${MOUNT};
 fi
