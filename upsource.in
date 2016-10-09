@@ -10,7 +10,7 @@ for pre in @LIBDIR@/handlers/*.pre; do
 
 cat $SOURCETAB | generate_commands | bash
 
-for run in @VARDIR@/*.post; do
+for run in @RUNDIR@/*.post; do
     if test -f ${run}; ${run}; fi; done
 
 for post in @LIBDIR@/handlers/*.post; do

@@ -4,7 +4,7 @@ SRCTAB=$(shell if test -f .srctab; then cat .srctab; else echo -n /etc/srctab; f
 VERSION=$(shell etc/gitversion)
 DESTROOT=
 LIBDIR=${PREFIX}/lib/sourcemap
-VARDIR=${VAR}/run/sourcemap
+RUNDIR=${RUN}/upsource
 BINDIR=${PREFIX}/bin
 INSTALLDIR=install -d
 INSTALLBIN=install -m 555
@@ -22,13 +22,13 @@ build: upsource sourcetab.awk .prefix .run .srctab
 	echo ${SRCTAB} > .srctab
 
 upsource: upsource.in .prefix
-	sed -e "s:@LIBDIR@:${LIBDIR}:g" -e "s:@VAR@:${VARDIR}:g" < $< > $@
+	sed -e "s:@LIBDIR@:${LIBDIR}:g" -e "s:@RUNDIR@:${RUNDIR}:g" < $< > $@
 	chmod a+x $@
 sourcetab.awk: sourcetab.awk.in .prefix
-	sed -e "s:@LIBDIR@:${LIBDIR}:g" -e "s:@VAR@:${VARDIR}:g" < $< > $@
+	sed -e "s:@LIBDIR@:${LIBDIR}:g" -e "s:@RUNDIR@:${RUNDIR}:g" < $< > $@
 
 installdirs:
-	${INSTALLDIR} ${VARDIR}
+	${INSTALLDIR} ${RUNDIR}
 	${INSTALLDIR} ${LIBDIR}
 	${INSTALLDIR} ${LIBDIR}/handlers
 
@@ -54,6 +54,8 @@ dist/.unpacked:
 debclean:
 	rm -rf dist/upsource-* dist/.unpacked
 debstart: dist/.unpacked
+debmake: debstart
+	cd dist/${VERSION}; dpkg-buildpackage -A -us -uc -sa -rfakeroot
 
 .PHONY: installdirs install clean
 
