@@ -28,9 +28,9 @@ sourcetab.awk: sourcetab.awk.in .prefix
 	sed -e "s:@LIBDIR@:${LIBDIR}:g" -e "s:@RUNDIR@:${RUNDIR}:g" < $< > $@
 
 installdirs:
-	${INSTALLDIR} ${RUNDIR}
-	${INSTALLDIR} ${LIBDIR}
-	${INSTALLDIR} ${LIBDIR}/handlers
+	${INSTALLDIR} ${DESTROOT}${RUNDIR}
+	${INSTALLDIR} ${DESTROOT}${LIBDIR}
+	${INSTALLDIR} ${DESTROOT}${LIBDIR}/handlers
 
 install: installdirs build
 	${INSTALLBIN} upsource ${DESTROOT}${PREFIX}/bin
