@@ -9,7 +9,7 @@ INSTALLDIR=install -d
 INSTALLBIN=install -m 555
 INSTALLER=install
 
-build: upsource sourcetab.awk .prefix .var .srctab
+build: upsource sourcetab.awk .prefix .run .srctab
 
 .prefix:
 	echo ${PREFIX} > .prefix
@@ -45,10 +45,14 @@ clean:
 
 dist/.unpacked: 
 	git archive --prefix=${VERSION}/ -o dist/${VERSION}.tar HEAD
-	cd dist; tar -xf ${VERSION}.tar;
+	cd dist; tar -xf ${VERSION}.tar; rm ${VERSION}.tar;
 	cd dist; mv ${VERSION}/dist/debian ${VERSION}/debian
-	etc/gitchangelog > dist/${VERSION}/debian/changelog;
+	etc/gitchangelog upsource stable < dist/debian/changelog > dist/${VERSION}/debian/changelog;
 	touch dist/.unpacked
+
+debclean:
+	rm -rf dist/upsource-* dist/.unpacked
+debstart: dist/.unpacked
 
 .PHONY: installdirs install clean
 

@@ -1,10 +1,11 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+build-indep binary-indep build:
+	make PREFIX=/usr RUN=/var/run SRCTAB=/etc/srctab
 
-%:
-	dh $@
+clean:
+	rm -f upsource sourcetab.awk .prefix .run .srctab
 
-
+install:
+	make install

@@ -7,14 +7,14 @@ Section: libs
 Homepage: http://www.libu8.org/
 
 Package: upsource-systemd
-Architecture: any
+Architecture: all
 Depends: upsource-core
 Description:
  Adds a systemd unit for updating /etc/srctab on boot
 
 Package: upsource-core
 Section: libs
-Architecture: any
+Architecture: all
 Depends: ${misc:Depends}
 Description:
  Provides for a configuration file which maps file system 
@@ -22,28 +22,28 @@ Description:
 
 Package: upsource-git
 Section: libs
-Architecture: any
+Architecture: all
 Depends: upsource-core git ${misc:Depends}
 Description:
   Provides the upsource handler for git
 
 Package: upsource-subversion
 Section: libs
-Architecture: any
+Architecture: all
 Depends: upsource-core subversion ${misc:Depends}
 Description:
   Provides the upsource handler for subversion
 
-Package: upsource-subversion
+Package: upsource-s3
 Section: libs
-Architecture: any
+Architecture: all
 Depends: upsource-core awscli ${misc:Depends}
 Description:
   Provides the upsource handler for Amazon S3 (using awscli)
 
 Package: upsource
 Section: libs
-Architecture: any
+Architecture: all
 Depends: upsource-core upsource-git upsource-subversion
 Description:
   Metapackage including common upscore handlers
