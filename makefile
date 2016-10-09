@@ -8,7 +8,7 @@ RUNDIR=${RUN}/upsource
 BINDIR=${PREFIX}/bin
 INSTALLDIR=install -d
 INSTALLBIN=install -m 555
-INSTALLER=install
+INSTALLER=install -D
 
 build: upsource sourcetab.awk .prefix .run .srctab
 
