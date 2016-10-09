@@ -40,7 +40,7 @@ installdirs:
 
 install: installdirs build
 	${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
-	${INSTALLFILE} upsource.awk ${DESTDIR}${LIBDIR}/handlers
+	${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
 	${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/svn.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
