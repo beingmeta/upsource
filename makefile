@@ -2,6 +2,8 @@ PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo -n /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo -n /var/run; fi)
 SRCTAB=$(shell if test -f .srctab; then cat .srctab; else echo -n /etc/srctab; fi)
 VERSION=$(shell etc/gitversion)
+GPGID=repoman@beingmeta.com
+CODENAME=beingmeta
 DESTDIR=
 LIBDIR=${PREFIX}/lib/upsource
 RUNDIR=${RUN}/upsource
@@ -45,22 +47,30 @@ install: installdirs build
 clean:
 	rm sourceup sourcetab.awk
 
-dist/.unpacked: 
-	git archive --prefix=${VERSION}/ -o dist/${VERSION}.tar HEAD
-	cd dist; tar -xf ${VERSION}.tar; rm ${VERSION}.tar;
-	cd dist; mv ${VERSION}/dist/debian ${VERSION}/debian
-	etc/gitchangelog upsource stable < dist/debian/changelog > dist/${VERSION}/debian/changelog;
-	touch dist/.unpacked
+dist/debs.setup:
+	(git archive --prefix=${VERSION}/ -o dist/${VERSION}.tar HEAD) && \
+	(cd dist; tar -xf ${VERSION}.tar; rm ${VERSION}.tar) && \
+	(cd dist; mv ${VERSION}/dist/debian ${VERSION}/debian) && \
+	(etc/gitchangelog upsource stable < dist/debian/changelog > dist/${VERSION}/debian/changelog;) && \
+	touch $@;
+
+dist/debs.built: dist/debs.setup
+	(cd dist/${VERSION}; dpkg-buildpackage -A -us -uc -sa -rfakeroot) && \
+	touch $@;
+
+dist/debs.signed: dist/debs.built
+	(cd staging; debsign --re-sign -k${GPGID} libu8_@U8VERSION@*.changes) && \
+	touch $@;
+debian: dist/debs.signed
+
+upload-deb: dist/debs.signed
+	cd dist; for change in *.changes; do \
+	  dupload -c --nomail --to ${CODENAME} $${change} && \
+	  rm -f $${change}; \
+	done
 
 debclean:
-	rm -rf dist/upsource-* dist/.unpacked
-debstart: dist/.unpacked
+	rm -rf dist/upsource-* dist/debs.*
 
-debfresh: debclean
-	make debstart
-
-debmake: debstart
-	cd dist/${VERSION}; dpkg-buildpackage -A -us -uc -sa -rfakeroot
-
-.PHONY: installdirs install clean
+.PHONY: installdirs install clean debian upload-deb debclean
 
