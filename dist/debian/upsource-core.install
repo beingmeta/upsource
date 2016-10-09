@@ -1,0 +1,4 @@
+usr/bin/upsource
+usr/lib/upsource/config
+usr/lib/upsource/handlers/link.upsource
+etc/srctab

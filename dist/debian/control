@@ -1,4 +1,4 @@
-Source: sourcetab
+Source: upsource
 Priority: optional
 Maintainer: Ken Haase <kh@beingmeta.com>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, debsigs, devscripts
@@ -6,17 +6,45 @@ Standards-Version: 3.9.4
 Section: libs
 Homepage: http://www.libu8.org/
 
-Package: sourcetab-systemd
+Package: upsource-systemd
 Architecture: any
-Depends: sourcetab ()
+Depends: upsource-core
 Description:
  Adds a systemd unit for updating /etc/srctab on boot
 
-Package: sourcetab
+Package: upsource-core
 Section: libs
 Architecture: any
 Depends: ${misc:Depends}
 Description:
  Provides for a configuration file which maps file system 
  locations to various sources (e.g. git or svn).
+
+Package: upsource-git
+Section: libs
+Architecture: any
+Depends: upsource-core git ${misc:Depends}
+Description:
+  Provides the upsource handler for git
+
+Package: upsource-subversion
+Section: libs
+Architecture: any
+Depends: upsource-core subversion ${misc:Depends}
+Description:
+  Provides the upsource handler for subversion
+
+Package: upsource-subversion
+Section: libs
+Architecture: any
+Depends: upsource-core awscli ${misc:Depends}
+Description:
+  Provides the upsource handler for Amazon S3 (using awscli)
+
+Package: upsource
+Section: libs
+Architecture: any
+Depends: upsource-core upsource-git upsource-subversion
+Description:
+  Metapackage including common upscore handlers
 

@@ -1,6 +1,7 @@
 PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo -n /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo -n /var/run; fi)
 SRCTAB=$(shell if test -f .srctab; then cat .srctab; else echo -n /etc/srctab; fi)
+VERSION=$(shell etc/gitversion)
 LIBDIR=${PREFIX}/lib/sourcemap
 VARDIR=${VAR}/run/sourcemap
 BINDIR=${PREFIX}/bin
@@ -41,6 +42,13 @@ install: installdirs build
 
 clean:
 	rm sourceup sourcetab.awk
+
+dist/.unpacked: 
+	git archive --prefix=${VERSION}/ -o dist/${VERSION}.tar HEAD
+	cd dist; tar -xf ${VERSION}.tar;
+	cd dist; mv ${VERSION}/dist/debian ${VERSION}/debian
+	etc/gitchangelog > dist/${VERSION}/debian/changelog;
+	touch dist/.unpacked
 
 .PHONY: installdirs install clean
 
