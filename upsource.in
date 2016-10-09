@@ -1,0 +1,18 @@
+SOURCETAB=${1:-/etc/srctab}
+generate_commands()
+{
+	if test -f @LIBDIR@/config; then cat @LIBDIR@/config; fi
+	echo "export PATH=@LIBDIR@/handlers:$$PATH";
+	grep -v "^\s*$" | grep -v "^[#;] | awk -f sourcetab.awk
+}
+for pre in @LIBDIR@/handlers/*.pre; do
+    if test -x ${pre}; then ${pre}; fi; done
+
+cat $SOURCETAB | generate_commands | bash
+
+for run in @VARDIR@/*.post; do
+    if test -f ${run}; ${run}; fi; done
+
+for post in @LIBDIR@/handlers/*.post; do
+    if test -x ${post}; then ${post}; fi; done
+
