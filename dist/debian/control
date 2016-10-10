@@ -9,7 +9,7 @@ Homepage: http://www.libu8.org/
 Package: upsource-core
 Section: admin
 Architecture: all
-Depends: ${misc:Depends}
+Depends: gawk, ${misc:Depends}
 Description:
  Provides for a configuration file which maps file system 
  locations to various sources (e.g. git or svn).

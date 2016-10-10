@@ -16,7 +16,7 @@ Requires=network.target local-fs.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/upsource @ETC@/srctab
+ExecStart=/usr/bin/upsource
 
 [Install]
 WantedBy=multi-user.target

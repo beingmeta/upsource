@@ -1,8 +1,9 @@
 ETC=$(shell if test -f .etc; then cat .etc; else echo -n /etc; fi)
 PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo -n /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo -n /var/run; fi)
+AWK=$(shell if test -f .awk; then cat .awk; else if which gawk; then echo -n gawk; else echo -n awk; fi)
 INITSCRIPTS=etc/systemd-upsource.service etc/sysv-upsource.sh etc/upstart-upsource.conf
-STATEFILES=.prefix .run .etc
+STATEFILES=.prefix .run .etc .awk
 VERSION=$(shell etc/gitversion)
 GPGID=repoman@beingmeta.com
 CODENAME=beingmeta
@@ -48,14 +49,23 @@ config_state: ${STATEFILES}
 	else rm .etc.tmp;            \
 	fi
 
-upsource: upsource.in .prefix .run .etc
+.awk:
+	echo ${AWK} > .awk.tmp
+	if diff .awk .awk.tmp;    \
+	  then mv .awk.tmp .awk;  \
+	else rm .awk.tmp;            \
+	fi
+
+upsource: upsource.in .prefix .run .etc .awk
 	sed -e "s:@LIBDIR@:${LIBDIR}:g" \
 	    -e "s:@RUNDIR@:${RUNDIR}:g" \
+	    -e "s:@AWK@:${AWK}:g"       \
 	    -e "s:@ETC@:${ETC}:g" < $< > $@
 	chmod a+x $@
 sourcetab.awk: sourcetab.awk.in .prefix
 	sed -e "s:@LIBDIR@:${LIBDIR}:g" \
 	    -e "s:@RUNDIR@:${RUNDIR}:g" \
+	    -e "s:@AWK@:${AWK}:g"       \
 	    -e "s:@ETC@:${ETC}:g" < $< > $@
 
 installdirs:
