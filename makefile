@@ -83,8 +83,6 @@ installconfig: installdirs
 	fi
 
 install: installdirs build installconfig
-	sudo make muggle-install
-muggle-install: installdirs build installconfig
 	${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
 	${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
 	${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
@@ -96,6 +94,9 @@ muggle-install: installdirs build installconfig
 	${INSTALLBIN} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
 	${INSTALLFILE} etc/upstart-upsource.conf \
 		${DESTDIR}/etc/init/upsource.conf
+
+xinstall:
+	sudo make install
 
 clean:
 	rm -f sourceup sourcetab.awk ${INITSCRIPTS} ${STATEFILES}
