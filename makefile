@@ -1,7 +1,7 @@
 ETC=$(shell if test -f .etc; then cat .etc; else echo -n /etc; fi)
 PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo -n /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo -n /var/run; fi)
-INITSCRIPTS=dist/systemd-upsource.service dist/sysv-upsource.sh dist/upstart-upsource.conf
+INITSCRIPTS=etc/systemd-upsource.service etc/sysv-upsource.sh etc/upstart-upsource.conf
 STATEFILES=.prefix .run .srctab .etc
 VERSION=$(shell etc/gitversion)
 GPGID=repoman@beingmeta.com
@@ -15,7 +15,7 @@ INSTALLBIN=install -m 555
 INSTALLFILE=install -D -m 644
 
 
-dist/%: dist/%.in
+etc/%: etc/%.in
 	sed -e "s:@LIBDIR@:${LIBDIR}:g" \
 	    -e "s:@RUNDIR@:${RUNDIR}:g" \
 	    -e "s:@ETC@:${ETC}:g" < $< > $@
