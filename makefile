@@ -101,7 +101,7 @@ installconfig: installdirs
 	  ${INSTALLFILE} config.ex.sh ${DESTDIR}${ETC}/upsource.d/config; \
 	else                                                              \
 	  echo "Not overwriting current "                                 \
-              ${DESTDIR}${ETC}/upsource.d/config                          \
+              ${DESTDIR}${ETC}/upsource.d/config;                         \
 	fi
 
 install: installdirs build installconfig
