@@ -1,22 +1,22 @@
 MOUNT=$1
 SOURCE=$2
+BRANCH=${BRANCH:-master}
 GITFLAGS=
 GIT=git ${GITFLAGS}
 if test ! -z "${ENVSOURCE}" && test -f ${ENVSOURCE}; then
   source ${ENVSOURCE};
 fi
-if test -z "${GIT_SSH_COMMAND}" && test ! -z "${SSH_KEY}"; then
-  export GIT_SSH_COMMAND="ssh -i ${SSH_KEY}";
-fi
+if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
+    if test -z "${GIT_SSH_COMMAND}"; then
+	export GIT_SSH_COMMAND="ssh "; fi
+    if test ! -z "${SSH_USER}"; then
+	export GIT_SSH_COMMAND="${GIT_SSH_COMMAND} -l ${SSH_USER}"; fi
+    if test ! -z "${SSH_KEY}"; then
+	export GIT_SSH_COMMAND="${GIT_SSH_COMMAND} -i ${SSH_KEY}"; fi
+fi;    
 # ?? Might need to handle cases where $BRANCH changes
 if test -d $MOUNT/.git; then
-   if test -z ${BRANCH}; then
-     cd ${MOUNT}; ${GIT} checkout master; ${GIT} pull;
-   else
-     cd ${MOUNT}; ${GIT} pull; ${GIT} checkout ${BRANCH}; ${GIT} pull
-   fi;	
-elif test -z "${BRANCH}"; then
-   ${GIT} clone ${SOURCE} ${MOUNT};
+   cd ${MOUNT}; ${GIT} checkout ${BRANCH}; ${GIT} pull
 else
    ${GIT} clone -b ${BRANCH} ${SOURCE} ${MOUNT};
 fi;

@@ -1,5 +1,5 @@
 usr/bin/upsource
-usr/lib/upsource/config
 usr/lib/upsource/sourcetab.awk
 usr/lib/upsource/handlers/link.upsource
 etc/srctab
+etc/upsource.cfg.sh

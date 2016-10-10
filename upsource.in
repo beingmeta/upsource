@@ -1,17 +1,24 @@
 #!/bin/sh
 SOURCETAB=${1:-@ETC@/srctab}
 SOURCETABD=${1:-@ETC@/sourcetab.d}
+UPSOURCEPREFIX=@PREFIX@
+UPSOURCELIB=@LIB@
+UPSOURCERUN=@RUN@
 sourcetab_command()
 {
 	grep -v "^\s*$" | grep -v "^[ 	]*[#;]" | awk -f @LIBDIR@/sourcetab.awk;
 }
 generate_upsource_commands()
 {
-    if test -f @LIBDIR@/config; then cat @LIBDIR@/config; fi;
-    if test -f ${SOURCETAB}; then cat ${SOURCETAB} | sourcetab_command;
+    if test -f @ETC@/upsource.cfg.sh; then cat @ETC@/upsource.cfg.sh; fi;
+    echo "export SSH_USER SSH_KEY OWNER GROUP SOURCETAB SOURCETABD";
+    echo "export UPSOURCELIB UPSOURCERUN UPSOURCEPREFIX";
+    if test -f ${SOURCETAB}; then cat ${SOURCETAB} | sourcetab_command; fi;
     if test -d ${SOURCTABD}; then
 	for tab in ${SOURCTABD}/*.srctab; do
-	    cat ${tab} | sourcetab_command; done
+	    cat ${tab} | sourcetab_command; 
+	done;
+    fi;
 }
 
 for pre in @LIBDIR@/handlers/*.pre; do

@@ -69,19 +69,33 @@ installdirs:
 	${INSTALLDIR} ${DESTDIR}/etc/init.d
 	${INSTALLDIR} ${DESTDIR}/etc/init
 
-install: installdirs build
+installconfig: installdirs
+	if test ! -f ${DESTDIR}${ETC}/srctab; then                        \
+	  ${INSTALLFILE} etc/srctab.template ${DESTDIR}${ETC}/srctab;     \
+	else                                                              \
+	  echo "Not overwriting current " ${DESTDIR}${ETC}/srctab;        \
+	fi
+	if test ! -f ${DESTDIR}${ETC}/upsource.cfg.sh; then               \
+	  ${INSTALLFILE} config.ex.sh ${DESTDIR}${ETC}/upsource.cfg.sh;   \
+	else                                                              \
+	  echo "Not overwriting current "                                 \
+              ${DESTDIR}${ETC}/upsource.cfg.sh;                           \
+	fi
+
+install: installdirs build installconfig
+	sudo make muggle-install
+muggle-install: installdirs build installconfig
 	${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
 	${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
 	${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/svn.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/s3.upsource ${DESTDIR}${LIBDIR}/handlers
-	${INSTALLFILE} config ${DESTDIR}${LIBDIR}/config
-	${INSTALLFILE} etc/srctab.template ${DESTDIR}${ETC}/srctab
 	${INSTALLFILE} etc/systemd-upsource.service \
 		${DESTDIR}/lib/systemd/system/upsource.service
 	${INSTALLBIN} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
-	${INSTALLFILE} etc/upstart-upsource.conf ${DESTDIR}/etc/init/upsource.conf
+	${INSTALLFILE} etc/upstart-upsource.conf \
+		${DESTDIR}/etc/init/upsource.conf
 
 clean:
 	rm -f sourceup sourcetab.awk ${INITSCRIPTS} ${STATEFILES}

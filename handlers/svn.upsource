@@ -7,8 +7,13 @@ MODE=
 if test ! -z "${ENVSOURCE}" && test -f ${ENVSOURCE}; then
   source ${ENVSOURCE};
 fi
-if test -z "${SVN_SSH}" && test ! -z "${SSH_KEY}"; then
-  export SVN_SSH="ssh -i ${SSH_KEY}";
+if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
+    if test -z "${SVN_SSH}"; then
+	export SVN_SSH="ssh "; fi
+    if test ! -z "${SSH_USER}"; then
+	export SVN_SSH="${SVN_SSH} -l ${SSH_USER}"; fi
+    if test ! -z "${SSH_KEY}"; then
+	export SVN_SSH="${SVN_SSH} -i ${SSH_KEY}"; fi
 fi
 if test -d ${MOUNT}/.svn; then
    cd ${MOUNT}; svn ${SVNFLAGS} update;
