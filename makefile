@@ -133,8 +133,10 @@ update-apt: dist/debs.uploaded
 debclean:
 	rm -rf dist/upsource-* dist/debs.*
 
-debfresh: debclean
+debfresh freshdeb newdeb: debclean
 	make debian
 
-.PHONY: build config_state initscripts installdirs install clean debian upload-deb debclean 
+.PHONY: build config_state initscripts installdirs install clean \
+	debian debclean debfresh freshdeb newdeb \
+	upload-debs upload-deb update-apt
 
