@@ -11,3 +11,12 @@ elif test -f $MOUNT || test -d $MOUNT; then
 else
   ln -sf $SOURCE $MOUNT;
 fi;
+if test ! -z "${OWNER}"; then
+   chown ${OWNER} ${MOUNT};
+fi;
+if test ! -z "${GROUP}"; then
+   chgrp ${GROUP} ${MOUNT};
+fi;
+if test ! -z "${MODE}"; then
+   chmod ${MODE} ${MOUNT};
+fi;

@@ -2,9 +2,6 @@ MOUNT=$1
 SOURCE=$2
 GITFLAGS=
 GIT=git ${GITFLAGS}
-OWNER=
-GROUP=
-MODE=
 if test ! -z "${ENVSOURCE}" && test -f ${ENVSOURCE}; then
   source ${ENVSOURCE};
 fi
@@ -23,12 +20,12 @@ elif test -z "${BRANCH}"; then
 else
    ${GIT} clone -b ${BRANCH} ${SOURCE} ${MOUNT};
 fi;
-if test "${OWNER}" != ""; then
+if test ! -z "${OWNER}"; then
    chown -R ${OWNER} ${MOUNT};
 fi;
-if test "${GROUP}" != ""; then
+if test ! -z "${GROUP}"; then
    chgrp -R ${GROUP} ${MOUNT};
 fi;
-if test "${MODE}" != ""; then
+if test ! -z "${MODE}"; then
    chmod -R ${MODE} ${MOUNT};
 fi;

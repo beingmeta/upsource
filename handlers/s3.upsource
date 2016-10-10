@@ -11,13 +11,12 @@ if test ! -z "${CREDENTIALS}"; then
   export AWS_SHARED_CREDENTIALS_FILE="${CREDENTIALS}";
 fi
 aws ${S3FLAGS} s3 sync ${SOURCE} ${MOUNT}
-if test "${OWNER}" != ""; then
+if test ! -z "${OWNER}"; then
    chown -R ${OWNER} ${MOUNT};
-fi
-if test "${GROUP}" != ""; then
+fi;
+if test ! -z "${GROUP}"; then
    chgrp -R ${GROUP} ${MOUNT};
-fi
-if test "${MODE}" != ""; then
+fi;
+if test ! -z "${MODE}"; then
    chmod -R ${MODE} ${MOUNT};
-fi
-
+fi;
