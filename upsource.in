@@ -17,7 +17,7 @@ sourcetab_command()
 }
 generate_upsource_commands()
 {
-    if test -f @ETC@/upsource.cfg.sh; then cat @ETC@/upsource.cfg.sh; fi;
+    if test -f @ETC@/upsource.d/config; then cat @ETC@/upsource.d/config; fi;
     echo "export SSH_USER SSH_KEY OWNER GROUP SOURCETAB SOURCETABD";
     echo "export PREFIX UPSOURCE STATEDIR";
     if test -f ${SOURCETAB}; then cat ${SOURCETAB} | sourcetab_command; fi;

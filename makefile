@@ -97,11 +97,11 @@ installconfig: installdirs
 	else                                                              \
 	  echo "Not overwriting current " ${DESTDIR}${ETC}/srctab;        \
 	fi
-	if test ! -f ${DESTDIR}${ETC}/upsource.cfg.sh; then               \
-	  ${INSTALLFILE} config.ex.sh ${DESTDIR}${ETC}/upsource.cfg.sh;   \
+	if test ! -f ${DESTDIR}${ETC}/upsource.d/config; then             \
+	  ${INSTALLFILE} config.ex.sh ${DESTDIR}${ETC}/upsource.d/config; \
 	else                                                              \
 	  echo "Not overwriting current "                                 \
-              ${DESTDIR}${ETC}/upsource.cfg.sh;                           \
+              ${DESTDIR}${ETC}/upsource.d/config                          \
 	fi
 
 install: installdirs build installconfig
