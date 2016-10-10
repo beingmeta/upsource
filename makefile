@@ -1,7 +1,7 @@
 ETC=$(shell if test -f .etc; then cat .etc; else echo /etc; fi)
 PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo /var/run; fi)
-AWK=$(shell if test -f .awk; then cat .awk; elif which gawk; then echo gawk; else echo awk; fi)
+AWK=$(shell if test -f .awk; then cat .awk; elif which gawk 2&>1 > /dev/null; then echo gawk; else echo awk; fi)
 INITSCRIPTS=etc/systemd-upsource.service etc/sysv-upsource.sh etc/upstart-upsource.conf
 STATEFILES=.prefix .run .etc .awk
 VERSION=$(shell etc/gitversion)
