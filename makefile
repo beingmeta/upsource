@@ -155,7 +155,7 @@ update-apt: dist/debs.uploaded
 	ssh dev /srv/repo/apt/scripts/getincoming
 
 debclean:
-	rm -rf dist/upsource-* dist/debs.*
+	rm -rf dist/upsource-* dist/debs.* dist/*.deb dist/*.changes
 
 debfresh freshdeb newdeb: debclean
 	make debian
