@@ -118,14 +118,23 @@ dist/debs.signed: dist/debs.built
 
 debian: dist/debs.signed
 
-upload-deb: dist/debs.signed
+dist/debs.uploaded: dist/debs.signed
 	cd dist; for change in *.changes; do \
 	  dupload -c --nomail --to ${CODENAME} $${change} && \
 	  rm -f $${change}; \
 	done
+	touch $@
+
+upload-debs upload-deb: dist/debs.uploaded
+
+update-apt: dist/debs.uploaded
+	ssh dev /srv/repo/apt/scripts/getincoming
 
 debclean:
 	rm -rf dist/upsource-* dist/debs.*
+
+debfresh: debclean
+	make debian
 
 .PHONY: build config_state initscripts installdirs install clean debian upload-deb debclean 
 
