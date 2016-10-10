@@ -1,7 +1,7 @@
 #!/bin/sh
 if test $# -eq 0; then
     SOURCETAB=@ETC@/srctab;
-    SOURCETABD=@ETC@/sourcetab.d;
+    SOURCETABD=@ETC@/upsource.d;
 else
     SOURCETAB=$1
     SOURCETABD=$2
