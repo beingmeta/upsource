@@ -7,8 +7,8 @@ else
     SOURCETABD=$2
 fi
 PREFIX=@PREFIX@
-UPSOURCE=@LIB@
-STATEDIR=@RUN@/upsource
+UPSOURCE=@LIBDIR@
+STATEDIR=@RUNDIR@/upsource
 AWK=@AWK@
 
 sourcetab_command()
