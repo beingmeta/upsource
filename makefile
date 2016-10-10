@@ -1,7 +1,7 @@
 ETC=$(shell if test -f .etc; then cat .etc; else echo -n /etc; fi)
 PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo -n /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo -n /var/run; fi)
-AWK=$(shell if test -f .awk; then cat .awk; else if which gawk; then echo -n gawk; else echo -n awk; fi)
+AWK=$(shell if test -f .awk; then cat .awk; elif which gawk; then echo -n gawk; else echo -n awk; fi)
 INITSCRIPTS=etc/systemd-upsource.service etc/sysv-upsource.sh etc/upstart-upsource.conf
 STATEFILES=.prefix .run .etc .awk
 VERSION=$(shell etc/gitversion)
@@ -30,30 +30,42 @@ config_state: ${STATEFILES}
 
 .prefix:
 	echo ${PREFIX} > .prefix.tmp
-	if diff .prefix .prefix.tmp;    \
-	  then mv .prefix.tmp .prefix;  \
-	else rm .prefix.tmp;            \
+	if test ! -f .prefix; then        \
+	  echo ${PREFIX} > .prefix;          \
+	  rm .prefix.tmp;                 \
+	elif diff .prefix .prefix.tmp;       \
+	  then mv .prefix.tmp .prefix;       \
+	else rm .prefix.tmp;              \
 	fi
 
 .run:
 	echo ${RUN} > .run.tmp
-	if diff .run .run.tmp;    \
-	  then mv .run.tmp .run;  \
-	else rm .run.tmp;            \
+	if test ! -f .run; then        \
+	  echo ${RUN} > .run;          \
+	  rm .run.tmp;                 \
+	elif diff .run .run.tmp;       \
+	  then mv .run.tmp .run;       \
+	else rm .run.tmp;              \
 	fi
 
 .etc:
 	echo ${ETC} > .etc.tmp
-	if diff .etc .etc.tmp;    \
-	  then mv .etc.tmp .etc;  \
-	else rm .etc.tmp;            \
+	if test ! -f .etc; then        \
+	  echo ${ETC} > .etc;          \
+	  rm .etc.tmp;                 \
+	elif diff .etc .etc.tmp;       \
+	  then mv .etc.tmp .etc;       \
+	else rm .etc.tmp;              \
 	fi
 
 .awk:
 	echo ${AWK} > .awk.tmp
-	if diff .awk .awk.tmp;    \
-	  then mv .awk.tmp .awk;  \
-	else rm .awk.tmp;            \
+	if test ! -f .awk; then        \
+	  echo ${AWK} > .awk;          \
+	  rm .awk.tmp;                 \
+	elif diff .awk .awk.tmp;       \
+	  then mv .awk.tmp .awk;       \
+	else rm .awk.tmp;              \
 	fi
 
 upsource: upsource.in .prefix .run .etc .awk
