@@ -1,14 +1,23 @@
 #!/bin/sh
-SOURCETAB=${1:-/etc/srctab}
-generate_commands()
+SOURCETAB=${1:-@ETC@/srctab}
+SOURCETABD=${1:-@ETC@/sourcetab.d}
+sourcetab_command()
 {
-	if test -f @LIBDIR@/config; then cat @LIBDIR@/config; fi;
 	grep -v "^\s*$" | grep -v "^[ 	]*[#;]" | awk -f @LIBDIR@/sourcetab.awk;
 }
+generate_upsource_commands()
+{
+    if test -f @LIBDIR@/config; then cat @LIBDIR@/config; fi;
+    if test -f ${SOURCETAB}; then cat ${SOURCETAB} | sourcetab_command;
+    if test -d ${SOURCTABD}; then
+	for tab in ${SOURCTABD}/*.srctab; do
+	    cat ${tab} | sourcetab_command; done
+}
+
 for pre in @LIBDIR@/handlers/*.pre; do
     if test -x ${pre}; then ${pre}; fi; done
 
-cat $SOURCETAB | generate_commands | bash
+generate_upsource_commands | bash
 
 for run in @RUNDIR@/*.post; do
     if test -f ${run}; then ${run}; fi; done

@@ -1,6 +1,8 @@
+ETC=$(shell if test -f .etc; then cat .etc; else echo -n /etc; fi)
 PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo -n /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo -n /var/run; fi)
-SRCTAB=$(shell if test -f .srctab; then cat .srctab; else echo -n /etc/srctab; fi)
+INITSCRIPTS=dist/systemd-upsource.service dist/sysv-upsource.sh dist/upstart-upsource.conf
+STATEFILES=.prefix .run .srctab .etc
 VERSION=$(shell etc/gitversion)
 GPGID=repoman@beingmeta.com
 CODENAME=beingmeta
@@ -12,24 +14,53 @@ INSTALLDIR=install -d
 INSTALLBIN=install -m 555
 INSTALLFILE=install -D -m 644
 
-build: upsource sourcetab.awk .prefix .run .srctab
+
+dist/%: dist/%.in
+	sed -e "s:@LIBDIR@:${LIBDIR}:g" \
+	    -e "s:@RUNDIR@:${RUNDIR}:g" \
+	    -e "s:@ETC@:${ETC}:g" < $< > $@
+	if test -x $<; then chmod a+x $@; fi
+
+build: upsource sourcetab.awk config_state initscripts
+
+initscripts: ${INITSCRIPTS}
+
+config_state: ${STATEFILES}
 
 .prefix:
-	echo ${PREFIX} > .prefix
+	echo ${PREFIX} > .prefix.tmp
+	if diff .prefix .prefix.tmp;    \
+	  then mv .prefix.tmp .prefix;  \
+	else rm .prefix.tmp;            \
+	fi
 
 .run:
-	echo ${RUN} > .run
+	echo ${RUN} > .run.tmp
+	if diff .run .run.tmp;    \
+	  then mv .run.tmp .run;  \
+	else rm .run.tmp;            \
+	fi
 
-.srctab:
-	echo ${SRCTAB} > .srctab
+.etc:
+	echo ${ETC} > .etc.tmp
+	if diff .etc .etc.tmp;    \
+	  then mv .etc.tmp .etc;  \
+	else rm .etc.tmp;            \
+	fi
 
-upsource: upsource.in .prefix
-	sed -e "s:@LIBDIR@:${LIBDIR}:g" -e "s:@RUNDIR@:${RUNDIR}:g" < $< > $@
+upsource: upsource.in .prefix .run .etc
+	sed -e "s:@LIBDIR@:${LIBDIR}:g" \
+	    -e "s:@RUNDIR@:${RUNDIR}:g" \
+	    -e "s:@ETC@:${ETC}:g" < $< > $@
 	chmod a+x $@
 sourcetab.awk: sourcetab.awk.in .prefix
-	sed -e "s:@LIBDIR@:${LIBDIR}:g" -e "s:@RUNDIR@:${RUNDIR}:g" < $< > $@
+	sed -e "s:@LIBDIR@:${LIBDIR}:g" \
+	    -e "s:@RUNDIR@:${RUNDIR}:g" \
+	    -e "s:@ETC@:${ETC}:g" < $< > $@
 
 installdirs:
+	${INSTALLDIR} ${ETC}
+	${INSTALLDIR} ${ETC}/upsource.d
 	${INSTALLDIR} ${DESTDIR}${PREFIX}/bin
 	${INSTALLDIR} ${DESTDIR}${RUNDIR}
 	${INSTALLDIR} ${DESTDIR}${LIBDIR}
@@ -46,13 +77,14 @@ install: installdirs build
 	${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLBIN} handlers/s3.upsource ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLFILE} config ${DESTDIR}${LIBDIR}/config
-	${INSTALLFILE} etc/srctab.template ${DESTDIR}${SRCTAB}
-	${INSTALLFILE} etc/systemd-upsource.service ${DESTDIR}/lib/systemd/system/upsource.service
+	${INSTALLFILE} etc/srctab.template ${DESTDIR}${ETC}/srctab
+	${INSTALLFILE} etc/systemd-upsource.service \
+		${DESTDIR}/lib/systemd/system/upsource.service
 	${INSTALLBIN} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
 	${INSTALLFILE} etc/upstart-upsource.conf ${DESTDIR}/etc/init/upsource.conf
 
 clean:
-	rm sourceup sourcetab.awk
+	rm -f sourceup sourcetab.awk ${INITSCRIPTS} ${STATEFILES}
 
 dist/debs.setup:
 	(git archive --prefix=${VERSION}/ -o dist/${VERSION}.tar HEAD) && \
@@ -68,6 +100,7 @@ dist/debs.built: dist/debs.setup
 dist/debs.signed: dist/debs.built
 	(cd dist; debsign --re-sign -k${GPGID} upsource_*_all.changes) && \
 	touch $@;
+
 debian: dist/debs.signed
 
 upload-deb: dist/debs.signed
@@ -79,5 +112,5 @@ upload-deb: dist/debs.signed
 debclean:
 	rm -rf dist/upsource-* dist/debs.*
 
-.PHONY: installdirs install clean debian upload-deb debclean
+.PHONY: build config_state initscripts installdirs install clean debian upload-deb debclean 
 

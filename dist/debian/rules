@@ -5,7 +5,4 @@
 	dh $@
 
 override_dh_auto_configure:
-	make PREFIX=/usr RUN=/var/run SRCTAB=/etc/srctab
-
-clean:
-	rm -f upsource sourcetab.awk .prefix .run .srctab
+	make PREFIX=/usr RUN=/var/run ETC=/etc

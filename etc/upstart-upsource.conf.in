@@ -9,9 +9,9 @@ expect none
 console log
 
 pre-start script
-   mkdir -p /var/run/upsource
+   mkdir -p @RUNDIR@
 end script
 
 script
-   /usr/bin/upsource /etc/srctab
+   /usr/bin/upsource @ETC@/srctab
 end script
