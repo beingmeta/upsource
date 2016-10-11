@@ -4,7 +4,7 @@ SVN="svn --non-interactive ${SVNFLAGS}"
 source ${UPSOURCE}/handlers/pre.sh;
 if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test -z "${SVN_SSH}"; then
-	export SVN_SSH="ssh -q "; fi
+	export SVN_SSH="ssh -q -o \"StrictHostKeyChecking no\" "; fi
     if test ! -z "${SSH_USER}"; then
 	export SVN_SSH="${SVN_SSH} -l ${SSH_USER}"; fi
     if test ! -z "${SSH_KEY}"; then
