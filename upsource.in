@@ -1,7 +1,7 @@
 #!/bin/sh
 PREFIX=@PREFIX@
 UPSOURCE=@LIBDIR@
-STATEDIR=@RUNDIR@/upsource
+STATEDIR=@RUNDIR@
 AWK=@AWK@
 CONFIG=${UPSOURCE_CONFIG:-@ETC@/upsource.d/config}
 
@@ -12,9 +12,13 @@ sourcetab_command()
 generate_upsource_commands()
 {
     ARG=$1
-    if test -f @ETC@/upsource.d/config; then cat @ETC@/upsource.d/config; fi;
-    echo "export SSH_USER SSH_KEY OWNER GROUP SOURCETAB SOURCETABD";
-    echo "export PREFIX UPSOURCE STATEDIR";
+    echo "export SSH_USER SSH_KEY OWNER GROUP SOURCETAB SOURCETABD;";
+    echo "export PREFIX=@PREFIX@;";
+    echo "export UPSOURCE=@LIBDIR@;";
+    echo "export STATEDIR=@RUNDIR@;";
+    echo "export ETC=@ETC@;";
+    if test -f @ETC@/upsource.d/config; then
+	cat @ETC@/upsource.d/config; fi;
     if test -d ${ARG}; then
 	for tab in ${SOURCETABD}/*.srctab; do
 	    if test -f ${tab}; then
@@ -35,11 +39,9 @@ for pre in @LIBDIR@/handlers/*.pre; do
 if test $# -eq 0; then
     generate_upsource_commands | bash;
 else 
-    generate_upsource_commands $1 | bash;
-    if test $# -neq 1; then 
-	shift;
-	echo "Extraneous arguments:" $*;
-    fi
+    for tab in $*; do \
+      generate_upsource_commands ${tab} | bash; 
+    done;
 fi
 
 for run in @RUNDIR@/*.post; do
