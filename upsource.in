@@ -37,7 +37,7 @@ for pre in @LIBDIR@/handlers/*.pre; do
     if test -x ${pre}; then ${pre}; fi; done
 
 if test $# -eq 0; then
-    generate_upsource_commands | bash;
+    generate_upsource_commands @ETC@/upsource.d | bash;
 else 
     for tab in $*; do \
       generate_upsource_commands ${tab} | bash; 
