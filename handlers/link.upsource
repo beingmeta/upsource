@@ -1,5 +1,6 @@
 MOUNT=$1
 SOURCE=$2
+source ${LIBDIR}/handlers/pre.sh;
 if test -L $MOUNT && test `readlink $MOUNT` = $SOURCE; then
    echo "Already linked";
 elif test -f $MOUNT || test -d $MOUNT; then
@@ -11,12 +12,4 @@ elif test -f $MOUNT || test -d $MOUNT; then
 else
   ln -sf $SOURCE $MOUNT;
 fi;
-if test ! -z "${OWNER}"; then
-   chown ${OWNER} ${MOUNT};
-fi;
-if test ! -z "${GROUP}"; then
-   chgrp ${GROUP} ${MOUNT};
-fi;
-if test ! -z "${MODE}"; then
-   chmod ${MODE} ${MOUNT};
-fi;
+source ${LIBDIR}/handlers/post.sh;

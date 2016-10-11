@@ -26,10 +26,12 @@ tree beneath *mountpoint*;
 * **SSH_KEY** specifies the identity key for SSH connections used by handlers;
 * **ENVSOURCE** specifies a file to be read into the handler
 
-The command **upsource** processes a sourcetab (it's first argument).
-When it is called without any argments, it processes the default
-sourcetabs: /etc/srctab and all files of the form
-*sourcetype*.sourcetab in /etc/upsource.d/.
+The command **upsource** with an argument processes either the argument
+(if it's a file) or the *name*.srctab files within it (if it's a directory.
+
+When **upsource** is called without any argments, it processes the
+default sourcetabs of the form *sourcetype*.sourcetab in
+/etc/upsource.d/. (This file location may vary).
 
 Sourcetab handlers are defined in the directory
 /usr/lib/upsource/handlers/*sourcetype*.upsource; they are normally

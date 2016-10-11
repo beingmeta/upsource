@@ -1,6 +1,5 @@
 MOUNT=$1
 SOURCE=$2
-S3FLAGS=
 if test ! -z "${ENVSOURCE}" && test -f ${ENVSOURCE}; then
   source ${ENVSOURCE};
 fi
@@ -11,12 +10,4 @@ if test ! -z "${CREDENTIALS}"; then
   export AWS_SHARED_CREDENTIALS_FILE="${CREDENTIALS}";
 fi
 aws ${S3FLAGS} s3 sync ${SOURCE} ${MOUNT}
-if test ! -z "${OWNER}"; then
-   chown -R ${OWNER} ${MOUNT};
-fi;
-if test ! -z "${GROUP}"; then
-   chgrp -R ${GROUP} ${MOUNT};
-fi;
-if test ! -z "${MODE}"; then
-   chmod -R ${MODE} ${MOUNT};
-fi;
+source ${LIBDIR}/handlers/post.sh;

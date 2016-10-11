@@ -1,12 +1,7 @@
 MOUNT=$1
 SOURCE=$2
-SVNFLAGS=
-OWNER=
-GROUP=
-MODE=
-if test ! -z "${ENVSOURCE}" && test -f ${ENVSOURCE}; then
-  source ${ENVSOURCE};
-fi
+SVN="svn --non-interactive ${SVNFLAGS}"
+source ${LIBDIR}/handlers/pre.sh;
 if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test -z "${SVN_SSH}"; then
 	export SVN_SSH="ssh "; fi
@@ -16,16 +11,8 @@ if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
 	export SVN_SSH="${SVN_SSH} -i ${SSH_KEY}"; fi
 fi
 if test -d ${MOUNT}/.svn; then
-   cd ${MOUNT}; svn ${SVNFLAGS} update;
+   cd ${MOUNT}; ${SVN} update;
 else
-   svn ${SVNFLAGS} checkout ${SOURCE} ${MOUNT};
+   ${SVN} checkout ${SOURCE} ${MOUNT};
 fi;
-if test ! -z "${OWNER}"; then
-   chown -R ${OWNER} ${MOUNT};
-fi;
-if test ! -z "${GROUP}"; then
-   chgrp -R ${GROUP} ${MOUNT};
-fi;
-if test ! -z "${MODE}"; then
-   chmod -R ${MODE} ${MOUNT};
-fi;
+source ${LIBDIR}/handlers/post.sh;

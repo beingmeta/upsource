@@ -1,15 +1,9 @@
 #!/bin/sh
-if test $# -eq 0; then
-    SOURCETAB=@ETC@/srctab;
-    SOURCETABD=@ETC@/upsource.d;
-else
-    SOURCETAB=$1
-    SOURCETABD=$2
-fi
 PREFIX=@PREFIX@
 UPSOURCE=@LIBDIR@
 STATEDIR=@RUNDIR@/upsource
 AWK=@AWK@
+CONFIG=${UPSOURCE_CONFIG:-@ETC@/upsource.d/config}
 
 sourcetab_command()
 {
@@ -17,21 +11,36 @@ sourcetab_command()
 }
 generate_upsource_commands()
 {
+    ARG=$1
     if test -f @ETC@/upsource.d/config; then cat @ETC@/upsource.d/config; fi;
     echo "export SSH_USER SSH_KEY OWNER GROUP SOURCETAB SOURCETABD";
     echo "export PREFIX UPSOURCE STATEDIR";
-    if test -f ${SOURCETAB}; then cat ${SOURCETAB} | sourcetab_command; fi;
-    if test ! -z "${SOURCETABD}" && test -d ${SOURCETABD}; then
+    if test -d ${ARG}; then
 	for tab in ${SOURCETABD}/*.srctab; do
-	    cat ${tab} | sourcetab_command; 
+	    if test -f ${tab}; then
+		cat ${tab} | sourcetab_command;
+	    fi;
 	done;
-    fi;
+    elif test -f ${ARG}; then 
+	cat ${ARG} | sourcetab_command;
+    else
+	echo "upsource usage: [sourcetab file or directory]";
+	exit;
+    fi
 }
 
 for pre in @LIBDIR@/handlers/*.pre; do
     if test -x ${pre}; then ${pre}; fi; done
 
-generate_upsource_commands | bash
+if test $# -eq 0; then
+    generate_upsource_commands | bash;
+else 
+    generate_upsource_commands $1 | bash;
+    if test $# -neq 1; then 
+	shift;
+	echo "Extraneous arguments:" $*;
+    fi
+fi
 
 for run in @RUNDIR@/*.post; do
     if test -f ${run}; then ${run}; fi; done
