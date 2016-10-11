@@ -20,7 +20,7 @@ generate_upsource_commands()
     if test -f @ETC@/upsource.d/config; then
 	cat @ETC@/upsource.d/config; fi;
     if test -d ${ARG}; then
-	for tab in ${SOURCETABD}/*.srctab; do
+	for tab in ${ARG}/*.srctab; do
 	    if test -f ${tab}; then
 		cat ${tab} | sourcetab_command;
 	    fi;
