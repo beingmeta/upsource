@@ -2,7 +2,7 @@ MOUNT=$1
 SOURCE=$2
 BRANCH=${BRANCH:-master}
 GIT="git -q ${GITFLAGS}"
-source ${LIBDIR}/handlers/pre.sh;
+source ${UPSOURCE}/handlers/pre.sh;
 if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test -z "${GIT_SSH_COMMAND}"; then
 	export GIT_SSH_COMMAND="ssh "; fi
@@ -17,4 +17,4 @@ if test -d $MOUNT/.git; then
 else
    ${GIT} clone -b ${BRANCH} ${SOURCE} ${MOUNT};
 fi;
-source ${LIBDIR}/handlers/post.sh;
+source ${UPSOURCE}/handlers/post.sh;

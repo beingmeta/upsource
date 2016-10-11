@@ -1,7 +1,7 @@
 MOUNT=$1
 SOURCE=$2
 SVN="svn --non-interactive ${SVNFLAGS}"
-source ${LIBDIR}/handlers/pre.sh;
+source ${UPSOURCE}/handlers/pre.sh;
 if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test -z "${SVN_SSH}"; then
 	export SVN_SSH="ssh "; fi
@@ -15,4 +15,4 @@ if test -d ${MOUNT}/.svn; then
 else
    ${SVN} checkout ${SOURCE} ${MOUNT};
 fi;
-source ${LIBDIR}/handlers/post.sh;
+source ${UPSOURCE}/handlers/post.sh;

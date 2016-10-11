@@ -1,6 +1,6 @@
 MOUNT=$1
 SOURCE=$2
-source ${LIBDIR}/handlers/pre.sh;
+source ${UPSOURCE}/handlers/pre.sh;
 if test -L $MOUNT && test `readlink $MOUNT` = $SOURCE; then
    echo "Already linked";
 elif test -f $MOUNT || test -d $MOUNT; then
@@ -12,4 +12,4 @@ elif test -f $MOUNT || test -d $MOUNT; then
 else
   ln -sf $SOURCE $MOUNT;
 fi;
-source ${LIBDIR}/handlers/post.sh;
+source ${UPSOURCE}/handlers/post.sh;

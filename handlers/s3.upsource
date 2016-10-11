@@ -1,8 +1,6 @@
 MOUNT=$1
 SOURCE=$2
-if test ! -z "${ENVSOURCE}" && test -f ${ENVSOURCE}; then
-  source ${ENVSOURCE};
-fi
+source ${UPSOURCE}/handlers/pre.sh;
 if test ! -z "${CONFIG}"; then
   export AWS_CONFIG_FILE="${CONFIG}";
 fi
@@ -10,4 +8,4 @@ if test ! -z "${CREDENTIALS}"; then
   export AWS_SHARED_CREDENTIALS_FILE="${CREDENTIALS}";
 fi
 aws ${S3FLAGS} s3 sync ${SOURCE} ${MOUNT}
-source ${LIBDIR}/handlers/post.sh;
+source ${UPSOURCE}/handlers/post.sh;
