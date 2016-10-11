@@ -1,11 +1,11 @@
 MOUNT=$1
 SOURCE=$2
 BRANCH=${BRANCH:-master}
-GIT="git -q ${GITFLAGS}"
+GIT="git ${GITFLAGS}"
 source ${UPSOURCE}/handlers/pre.sh;
 if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test -z "${GIT_SSH_COMMAND}"; then
-	export GIT_SSH_COMMAND="ssh "; fi
+	export GIT_SSH_COMMAND="ssh -q "; fi
     if test ! -z "${SSH_USER}"; then
 	export GIT_SSH_COMMAND="${GIT_SSH_COMMAND} -l ${SSH_USER}"; fi
     if test ! -z "${SSH_KEY}"; then
