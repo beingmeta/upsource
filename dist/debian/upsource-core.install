@@ -1,6 +1,4 @@
 usr/bin/upsource
 usr/lib/upsource/sourcetab.awk
 usr/lib/upsource/handlers/link.upsource
-etc/srctab
 etc/upsource.d/config
-
