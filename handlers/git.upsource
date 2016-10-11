@@ -1,7 +1,7 @@
 MOUNT=$1
 SOURCE=$2
 BRANCH=${BRANCH:-master}
-GIT=git -q ${GITFLAGS}
+GIT="git -q ${GITFLAGS}"
 source ${LIBDIR}/handlers/pre.sh;
 if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test -z "${GIT_SSH_COMMAND}"; then
