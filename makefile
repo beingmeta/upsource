@@ -3,7 +3,13 @@ PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo /var/run; fi)
 LOG=$(shell if test -f .log; then cat .log; else echo /var/log; fi)
 AWK=$(shell if test -f .awk; then cat .awk; elif which gawk 2>&1 > /dev/null; then echo gawk; else echo awk; fi)
+CWD=$(shell pwd)
 
+VERSION=$(shell etc/gitversion)
+BASEVERSION=$(shell echo ${VERSION} | sed -e "s:upsource-::g" -e "s:-[0-9]+$::g")
+RELEASE=$(shell echo ${VERSION} | sed -e "s:upsource-[0-9]+\.[0-9]+-::g")
+
+GPG=(shell which gpg2 || which gpg || echo gpg)
 GPGID=repoman@beingmeta.com
 CODENAME=beingmeta
 DESTDIR=
@@ -23,9 +29,11 @@ REWRITES=-e "s:@PREFIX@:${PREFIX}:g" \
 	 -e "s:@LOGDIR@:${LOGDIR}:g" \
 	 -e "s:@AWK@:${AWK}:g"       \
 	 -e "s:@ETC@:${ETC}:g" 
+SPEC_REWRITES=-e "s:@VERSION@:${VERSION}:g" \
+	      -e "s:@BASEVERSION@:${BASEVERSION}:g" \
+	      -e "s:@RELEASE@:${RELEASE}:g"
 
 INITSCRIPTS=etc/systemd-upsource.service etc/sysv-upsource.sh etc/upstart-upsource.conf
-VERSION=$(shell etc/gitversion)
 
 
 etc/%: etc/%.in .state
@@ -126,14 +134,18 @@ debclean:
 debfresh freshdeb newdeb: debclean
 	make debian
 
-dist/rpms.setup:
+dist/${VERSION}.tar:
+	echo VERSION=${VERSION};
+	echo BASEVERSION=${BASEVERSION};
+	echo RELEASE=${RELEASE};
 	(git archive --prefix=${VERSION}/                            \
 	     -o dist/${VERSION}.tar HEAD) &&                         \
 	(cd dist; tar -xf ${VERSION}.tar; rm ${VERSION}.tar) &&      \
-	(cd dist; mv ${VERSION}/dist/upsource.spec ${VERSION}/upsource.spec) &&    \
+	(cd dist; sed ${SPEC_REWRITES} < ${VERSION}/dist/upsource.spec.in > ${VERSION}/upsource.spec) &&    \
+	(cd dist; tar -cf ${VERSION}.tar ${VERSION}; rm -rf ${VERSION}) &&    \
 	touch $@;
 
-dist/rpms.built: dist/rpms.setup
+dist/rpms.built: dist/${VERSION}.tar
 	rpmbuild -ta \
 	         --define="_rpmdir ${CWD}/dist" \
 	         --define="_srcrpmdir ${CWD}/dist" \
