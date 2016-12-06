@@ -51,16 +51,16 @@ Summary:        Upsource control files for sysv init
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
 
-%description    upstart
-Control files for using upsource with upstart init processes
+%description    sysv
+Control files for using upsource with sysv init processes
 
 %package        upstart
 Summary:        Upsource control files for upstart init
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
 
-%description    sysv
-Control files for using upsource with sysv init processes
+%description    upstart
+Control files for using upsource with upstart init processes
 
 %package        systemd
 Summary:        Upsource control files for systemd init
@@ -99,6 +99,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files s3
 /usr/lib/upsource/handlers/s3.upsource
+
+%files sysv
+/etc/init.d/upsource
+
+%files upstart
+/etc/init/upsource.conf
+
+%files systemd
+/lib/systemd/system/upsource.service
 
 %changelog
 * Mon Dec 5 2016 beingmeta repository manager <repoman@beingmeta.com> 0.5
