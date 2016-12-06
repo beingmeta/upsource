@@ -7,7 +7,7 @@ CWD=$(shell pwd)
 
 VERSION=$(shell etc/gitversion)
 BASEVERSION=$(shell echo ${VERSION} | sed -e "s/upsource-//" -e "s/-[[:digit:]]\+$/")
-RELEASE=$(shell echo ${VERSION} | sed -e "s:upsource-[[:digit:]]\+\.[[:digit:]]\+/g")
+RELEASE=$(shell echo ${VERSION} | sed -e "s/upsource-[[:digit:]]\+\.[[:digit:]]\+//g")
 
 GPG=(shell which gpg2 || which gpg || echo gpg)
 GPGID=repoman@beingmeta.com
