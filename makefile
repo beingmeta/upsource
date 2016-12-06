@@ -6,8 +6,8 @@ AWK=$(shell if test -f .awk; then cat .awk; elif which gawk 2>&1 > /dev/null; th
 CWD=$(shell pwd)
 
 VERSION=$(shell etc/gitversion)
-BASEVERSION=$(shell echo ${VERSION} | sed -e "s:upsource-::g" -e "s:-[0-9]+$::g")
-RELEASE=$(shell echo ${VERSION} | sed -e "s:upsource-[0-9]+\.[0-9]+-::g")
+BASEVERSION=$(shell echo ${VERSION} | sed -e "s/upsource-//" -e "s/-[[:digit:]]\+$/")
+RELEASE=$(shell echo ${VERSION} | sed -e "s:upsource-[[:digit:]]\+\.[[:digit:]]\+/g")
 
 GPG=(shell which gpg2 || which gpg || echo gpg)
 GPGID=repoman@beingmeta.com
