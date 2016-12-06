@@ -1,9 +1,12 @@
-ETC=$(shell if test -f .etc; then cat .etc; else echo /etc; fi)
-PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo /usr; fi)
-RUN=$(shell if test -f .run; then cat .run; else echo /var/run; fi)
-LOG=$(shell if test -f .log; then cat .log; else echo /var/log; fi)
-AWK=$(shell if test -f .awk; then cat .awk; elif which gawk 2>&1 > /dev/null; then echo gawk; else echo awk; fi)
-CWD=$(shell pwd)
+ETC		= $(shell if test -f .etc; then cat .etc; else echo /etc; fi)
+PREFIX		= $(shell if test -f .prefix; then cat .prefix; else echo /usr; fi)
+RUN		= $(shell if test -f .run; then cat .run; else echo /var/run; fi)
+LOG		= $(shell if test -f .log; then cat .log; else echo /var/log; fi)
+AWK		= $(shell etc/getawk)
+CWD		= $(shell pwd)
+YUMREPO   	= dev:/srv/repo/yum/beingmeta/noarch
+YUMHOST   	= dev
+YUMSCRIPT 	= /srv/repo/yum/scripts/updateyum
 
 VERSION=$(shell etc/gitversion)
 BASEVERSION=$(shell echo ${VERSION} | sed -e "s/upsource-//g" -e "s/-[[:digit:]]\+//g")
@@ -135,21 +138,34 @@ debfresh freshdeb newdeb: debclean
 	make debian
 
 dist/${VERSION}.tar:
-	(git archive --prefix=upsource-${BASEVERSION}/                            \
-	     -o dist/${VERSION}.tar HEAD)
+	(git archive --prefix=upsource-${BASEVERSION}/ -o dist/${VERSION}.tar HEAD)
 
-upsource.spec: dist/upsource.spec.in
-	sed ${SPEC_REWRITES} < dist/upsource.spec.in > upsource.spec
+${VERSION}.spec: dist/upsource.spec.in
+	sed ${SPEC_REWRITES} < $< > $@
 
-dist/rpms.built: upsource.spec dist/${VERSION}.tar
+buildrpms: dist/rpms.built
+
+dist/rpms.built: ${VERSION}.spec dist/${VERSION}.tar
 	rpmbuild -ba \
-	         --define="_topdir ${CWD}/dist"			\
+		 --define "_sourcedir ${CWD}/dist" \
 	         --define="_rpmdir ${CWD}/dist" \
 	         --define="_srcrpmdir ${CWD}/dist" \
 	         --define="_gpg_name ${GPGID}" \
 	         --define="__gpg ${GPG}" \
-	   upsource.spec
+	   ${VERSION}.spec
 	touch $@;
+
+dist/yum.updated: dist/rpms.built
+	scp -r dist/${VERSION}.src.rpm dist/noarch ${YUMREPO}
+	ssh ${YUMHOST} /srv/repo/yum/scripts/updateyum
+	rm -f dist/${VERSION}.src.rpm dist/noarch/*
+	touch dist/yum.updated
+
+update-yum: dist/yum.updated
+
+rpmclean:
+	rm -rf dist/upsource*.tar dist/rpms.* upsource-*.spec
+
 
 .PHONY: build config_state initscripts installdirs install clean \
 	debian debclean debfresh freshdeb newdeb \

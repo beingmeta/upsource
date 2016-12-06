@@ -2,12 +2,14 @@ Name:           upsource
 Version:        @BASEVERSION@
 Release:        @RELEASE@
 Summary:        utility/compatability for Unicode and other functions
-
 Group:          System Environment/Libraries
 License:        GNU LGPL
 URL:            http://www.beingmeta.com/
 Source0:        @VERSION@.tar
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
+Vendor:         beingmeta, inc
+Packager:       reopman@beingmeta.com
 #BuildRequires:  make, sed
 
 %description
