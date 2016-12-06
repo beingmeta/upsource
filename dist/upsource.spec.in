@@ -1,5 +1,5 @@
 Name:           upsource
-Version:        @VERSION@
+Version:        @BASEVERSION@
 Release:        @RELEASE@
 Summary:        utility/compatability for Unicode and other functions
 
