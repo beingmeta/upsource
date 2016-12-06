@@ -6,7 +6,7 @@ AWK		= $(shell etc/getawk)
 CWD		= $(shell pwd)
 YUMREPO   	= dev:/srv/repo/yum/beingmeta/noarch
 YUMHOST   	= dev
-YUMSCRIPT 	= /srv/repo/yum/scripts/updateyum
+YUMSCRIPT 	= /srv/repo/scripts/freshyum
 
 VERSION=$(shell etc/gitversion)
 BASEVERSION=$(shell echo ${VERSION} | sed -e "s/upsource-//g" -e "s/-[[:digit:]]\+//g")
@@ -163,7 +163,7 @@ rpms buildrpms: dist/rpms.built
 
 dist/yum.updated: dist/rpms.built
 	scp -r dist/${VERSION}.src.rpm dist/noarch ${YUMREPO}
-	ssh ${YUMHOST} /srv/repo/yum/scripts/updateyum
+	ssh ${YUMHOST} ${YUMUPDATE}
 	rm -f dist/${VERSION}.src.rpm dist/noarch/*
 	touch dist/yum.updated
 
@@ -173,10 +173,12 @@ rpmclean:
 	rm -rf upsource-*.spec dist/upsource*.tar dist/rpms.*
 	rm -rf dist/*.rpm dist/noarch/*.rpm 
 
+freshrpms rpmfresh: rpmclean
+	make rpms
 
 .PHONY: build config_state initscripts installdirs install clean \
 	debian debs dpkgs debclean debfresh freshdeb newdeb \
-	rpms buildrpms rpmclean \
+	rpms buildrpms rpmclean freshrpms rpmfresh \
 	upload-debs upload-deb update-apt update-yum
 
 # Maintaining state files
