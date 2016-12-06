@@ -46,6 +46,30 @@ Requires:       %{name} = %{version}-%{release}, awscli
 %description    s3
 Provides support for S3-based sources
 
+%package        sysv
+Summary:        Upsource control files for sysv init
+Group:          Development/Libraries
+Requires:       %{name} = %{version}-%{release}
+
+%description    upstart
+Control files for using upsource with upstart init processes
+
+%package        upstart
+Summary:        Upsource control files for upstart init
+Group:          Development/Libraries
+Requires:       %{name} = %{version}-%{release}
+
+%description    sysv
+Control files for using upsource with sysv init processes
+
+%package        systemd
+Summary:        Upsource control files for systemd init
+Group:          Development/Libraries
+Requires:       %{name} = %{version}-%{release}
+
+%description    systemd
+Control files for using upsource with systemd init processes
+
 %prep
 %setup -q
 
