@@ -6,7 +6,7 @@ AWK=$(shell if test -f .awk; then cat .awk; elif which gawk 2>&1 > /dev/null; th
 CWD=$(shell pwd)
 
 VERSION=$(shell etc/gitversion)
-BASEVERSION=$(shell echo ${VERSION} | sed -e "s/-[[:digit:]]\+$//g" -e "s/upsource-//g")
+BASEVERSION=$(shell echo ${VERSION} | sed -e "s/upsource-//g" -e "s/-[[:digit:]]\+//g")
 RELEASE=$(shell echo ${VERSION} | sed -e "s/upsource-[[:digit:]]\+\.[[:digit:]]-\+//g")
 
 GPG=(shell which gpg2 || which gpg || echo gpg)
@@ -146,6 +146,9 @@ dist/${VERSION}.tar:
 	touch $@;
 
 dist/rpms.built: dist/${VERSION}.tar
+	echo VERSION=${VERSION};
+	echo BASEVERSION=${BASEVERSION};
+	echo RELEASE=${RELEASE};
 	rpmbuild -ta \
 	         --define="_rpmdir ${CWD}/dist" \
 	         --define="_srcrpmdir ${CWD}/dist" \
