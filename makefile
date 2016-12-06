@@ -156,7 +156,7 @@ dist/rpms.built: ${VERSION}.spec dist/${VERSION}.tar
 	         --define="_srcrpmdir ${CWD}" \
 	         --define="_gpg_name ${GPGID}" \
 	         --define="__gpg ${GPG}" \
-	   upsource*.rpm noarch/upsource*.rpm
+	   dist/upsource*.rpm dist/noarch/upsource*.rpm
 	touch $@;
 
 rpms buildrpms: dist/rpms.built
