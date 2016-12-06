@@ -1,14 +1,14 @@
 Name:           upsource
-Version:        0.5
-Release:        1
+Version:        @VERSION@
+Release:        @RELEASE@
 Summary:        utility/compatability for Unicode and other functions
 
 Group:          System Environment/Libraries
 License:        GNU LGPL
 URL:            http://www.beingmeta.com/
-Source0:        upsource-0.5.tar
+Source0:        upsource-@VERSION@-@RELEASE@.tar
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  make
+BuildRequires:  make, sed
 
 %description
 Provides for a configuration file which maps file system 
