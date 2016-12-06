@@ -135,26 +135,20 @@ debfresh freshdeb newdeb: debclean
 	make debian
 
 dist/${VERSION}.tar:
-	echo VERSION=${VERSION};
-	echo BASEVERSION=${BASEVERSION};
-	echo RELEASE=${RELEASE};
-	(git archive --prefix=$upsource-{BASEVERSION}/                            \
+	(git archive --prefix=upsource-${BASEVERSION}/                            \
 	     -o dist/${VERSION}.tar HEAD)
 
 upsource.spec: dist/upsource.spec.in
 	sed ${SPEC_REWRITES} < dist/upsource.spec.in > upsource.spec
 
-dist/rpms.built: upsource.spec # dist/${VERSION}.tar
-	echo VERSION=${VERSION};
-	echo BASEVERSION=${BASEVERSION};
-	echo RELEASE=${RELEASE};
+dist/rpms.built: upsource.spec dist/${VERSION}.tar
 	rpmbuild -ba \
 	         --define="_topdir ${CWD}/dist"			\
 	         --define="_rpmdir ${CWD}/dist" \
 	         --define="_srcrpmdir ${CWD}/dist" \
 	         --define="_gpg_name ${GPGID}" \
 	         --define="__gpg ${GPG}" \
-	   upsource.spec # dist/${VERSION}.tar
+	   upsource.spec
 	touch $@;
 
 .PHONY: build config_state initscripts installdirs install clean \
