@@ -61,20 +61,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %files core
 %{_bindir}/upsource
-%{_libdir}/upsource/sourcetab.awk
-%{_libdir}/upsource/handlers/link.upsource
-%{_libdir}/upsource/handlers/pre.sh
-%{_libdir}/upsource/handlers/post.sh
+/usr/lib/upsource/sourcetab.awk
+/usr/lib/upsource/handlers/link.upsource
+/usr/lib/upsource/handlers/pre.sh
+/usr/lib/upsource/handlers/post.sh
 /etc/upsource.d/config
 
 %files git
-%{_libdir}/upsource/handlers/git.upsource
+/usr/lib/upsource/handlers/git.upsource
 
 %files subversion
-%{_libdir}/upsource/handlers/svn.upsource
+/usr/lib/upsource/handlers/svn.upsource
 
 %files s3
-%{_libdir}/upsource/handlers/s3.upsource
+/usr/lib/upsource/handlers/s3.upsource
 
 %changelog
 * Mon Dec 5 2016 beingmeta repository manager <repoman@beingmeta.com> 0.5
