@@ -6,7 +6,7 @@ Summary:        utility/compatability for Unicode and other functions
 Group:          System Environment/Libraries
 License:        GNU LGPL
 URL:            http://www.beingmeta.com/
-Source0:        upsource-@VERSION@-@RELEASE@.tar
+Source0:        @VERSION@.tar
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  make, sed
 
