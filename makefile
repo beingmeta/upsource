@@ -170,7 +170,8 @@ dist/yum.updated: dist/rpms.built
 update-yum: dist/yum.updated
 
 rpmclean:
-	rm -rf dist/upsource*.tar dist/rpms.* upsource-*.spec
+	rm -rf upsource-*.spec dist/upsource*.tar dist/rpms.*
+	rm -rf dist/*.rpm dist/noarch/*.rpm 
 
 
 .PHONY: build config_state initscripts installdirs install clean \
