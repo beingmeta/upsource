@@ -1,0 +1,8 @@
+#!/bin/sh
+if test -f .awk; then
+    cat .awk;
+elif which gawk 2>&1 > /dev/null; then
+    echo gawk;
+else
+     echo awk; 
+fi;
