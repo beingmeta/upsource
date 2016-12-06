@@ -6,7 +6,7 @@ AWK=$(shell if test -f .awk; then cat .awk; elif which gawk 2>&1 > /dev/null; th
 CWD=$(shell pwd)
 
 VERSION=$(shell etc/gitversion)
-BASEVERSION=$(shell echo ${VERSION} | sed -e "s/^upsource-//g" -e "s/-[[:digit:]]\+$/g")
+BASEVERSION=$(shell echo ${VERSION} | sed -e "s/-[[:digit:]]\+$//g" -e "s/upsource-//g")
 RELEASE=$(shell echo ${VERSION} | sed -e "s/upsource-[[:digit:]]\+\.[[:digit:]]-\+//g")
 
 GPG=(shell which gpg2 || which gpg || echo gpg)
