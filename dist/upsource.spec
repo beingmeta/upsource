@@ -8,9 +8,7 @@ License:        GNU LGPL
 URL:            http://www.beingmeta.com/
 Source0:        libu8-2.5.4.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-BuildRequires:
-Requires:
+BuildRequires:  make
 
 %description
 Provides for a configuration file which maps file system 
@@ -27,22 +25,29 @@ The %{name}-core package contains the basic executables and directory structure 
 %package        git
 Summary:        GIT handlers/support for upsource
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name} = %{version}-%{release}, git
+
+%description    git
+Provides support for git sources
+
+%package        subversion
+Summary:        Subversion handlers/support for upsource
+Group:          Development/Libraries
+Requires:       %{name} = %{version}-%{release}, subversion
 
 %description    subversion
 Provides support for subversion sources
 
 %package        s3
-Summary:        Subversion handlers/support for upsource
+Summary:        S3 handlers/support for upsource
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name} = %{version}-%{release}, awscli
 
 %description    s3
-Provides support for subversion sources
+Provides support for S3-based sources
 
 %prep
 %setup -q
-
 
 %build
 make
