@@ -12,7 +12,7 @@ VERSION=$(shell etc/gitversion)
 BASEVERSION=$(shell echo ${VERSION} | sed -e "s/upsource-//g" -e "s/-[[:digit:]]\+//g")
 RELEASE=$(shell echo ${VERSION} | sed -e "s/upsource-[[:digit:]]\+\.[[:digit:]]-\+//g")
 
-GPG=(shell which gpg2 || which gpg || echo gpg)
+GPG=$(shell which gpg2 || which gpg || echo gpg)
 GPGID=repoman@beingmeta.com
 CODENAME=beingmeta
 DESTDIR=
@@ -117,7 +117,7 @@ dist/debs.signed: dist/debs.built
 	(cd dist; debsign --re-sign -k${GPGID} upsource_*_all.changes) && \
 	touch $@;
 
-debian: dist/debs.signed
+debian debs dpkgs: dist/debs.signed
 
 dist/debs.uploaded: dist/debs.signed
 	cd dist; for change in *.changes; do \
@@ -143,8 +143,6 @@ dist/${VERSION}.tar:
 ${VERSION}.spec: dist/upsource.spec.in
 	sed ${SPEC_REWRITES} < $< > $@
 
-buildrpms: dist/rpms.built
-
 dist/rpms.built: ${VERSION}.spec dist/${VERSION}.tar
 	rpmbuild -ba \
 		 --define "_sourcedir ${CWD}/dist" \
@@ -153,7 +151,15 @@ dist/rpms.built: ${VERSION}.spec dist/${VERSION}.tar
 	         --define="_gpg_name ${GPGID}" \
 	         --define="__gpg ${GPG}" \
 	   ${VERSION}.spec
+	rpm --resign \
+	         --define="_rpmdir ${CWD}" \
+	         --define="_srcrpmdir ${CWD}" \
+	         --define="_gpg_name ${GPGID}" \
+	         --define="__gpg ${GPG}" \
+	   upsource*.rpm noarch/upsource*.rpm
 	touch $@;
+
+rpms buildrpms: dist/rpms.built
 
 dist/yum.updated: dist/rpms.built
 	scp -r dist/${VERSION}.src.rpm dist/noarch ${YUMREPO}
@@ -168,8 +174,9 @@ rpmclean:
 
 
 .PHONY: build config_state initscripts installdirs install clean \
-	debian debclean debfresh freshdeb newdeb \
-	upload-debs upload-deb update-apt
+	debian debs dpkgs debclean debfresh freshdeb newdeb \
+	rpms buildrpms rpmclean \
+	upload-debs upload-deb update-apt update-yum
 
 # Maintaining state files
 
