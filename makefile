@@ -138,23 +138,23 @@ dist/${VERSION}.tar:
 	echo VERSION=${VERSION};
 	echo BASEVERSION=${BASEVERSION};
 	echo RELEASE=${RELEASE};
-	(git archive --prefix=${VERSION}/                            \
-	     -o dist/${VERSION}.tar HEAD) &&                         \
-	(cd dist; tar -xf ${VERSION}.tar; rm ${VERSION}.tar) &&      \
-	(cd dist; sed ${SPEC_REWRITES} < ${VERSION}/dist/upsource.spec.in > ${VERSION}/upsource.spec) &&    \
-	(cd dist; tar -cf ${VERSION}.tar ${VERSION}; rm -rf ${VERSION}) &&    \
-	touch $@;
+	(git archive --prefix=$upsource-{BASEVERSION}/                            \
+	     -o dist/${VERSION}.tar HEAD)
 
-dist/rpms.built: dist/${VERSION}.tar
+upsource.spec: dist/upsource.spec.in
+	sed ${SPEC_REWRITES} < dist/upsource.spec.in > upsource.spec
+
+dist/rpms.built: upsource.spec # dist/${VERSION}.tar
 	echo VERSION=${VERSION};
 	echo BASEVERSION=${BASEVERSION};
 	echo RELEASE=${RELEASE};
-	rpmbuild -ta \
+	rpmbuild -ba \
+	         --define="_topdir ${CWD}/dist"			\
 	         --define="_rpmdir ${CWD}/dist" \
 	         --define="_srcrpmdir ${CWD}/dist" \
 	         --define="_gpg_name ${GPGID}" \
 	         --define="__gpg ${GPG}" \
-	   dist/${VERSION}.tar
+	   upsource.spec # dist/${VERSION}.tar
 	touch $@;
 
 .PHONY: build config_state initscripts installdirs install clean \
