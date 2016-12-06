@@ -1,6 +1,7 @@
 ETC=$(shell if test -f .etc; then cat .etc; else echo /etc; fi)
 PREFIX=$(shell if test -f .prefix; then cat .prefix; else echo /usr; fi)
 RUN=$(shell if test -f .run; then cat .run; else echo /var/run; fi)
+LOG=$(shell if test -f .log; then cat .log; else echo /var/log; fi)
 AWK=$(shell if test -f .awk; then cat .awk; elif which gawk 2>&1 > /dev/null; then echo gawk; else echo awk; fi)
 
 GPGID=repoman@beingmeta.com
@@ -12,12 +13,14 @@ INSTALLFILE=install -D -m 644
 
 LIBDIR=${PREFIX}/lib/upsource
 RUNDIR=${RUN}/upsource
+LOGDIR=${LOG}/upsource
 BINDIR=${PREFIX}/bin
 
-STATEFILES=.prefix .run .etc .awk
+STATEFILES=.prefix .run .etc .awk .log
 REWRITES=-e "s:@PREFIX@:${PREFIX}:g" \
 	 -e "s:@LIBDIR@:${LIBDIR}:g" \
 	 -e "s:@RUNDIR@:${RUNDIR}:g" \
+	 -e "s:@LOGDIR@:${LOGDIR}:g" \
 	 -e "s:@AWK@:${AWK}:g"       \
 	 -e "s:@ETC@:${ETC}:g" 
 
@@ -123,6 +126,22 @@ debclean:
 debfresh freshdeb newdeb: debclean
 	make debian
 
+dist/rpms.setup:
+	(git archive --prefix=${VERSION}/                            \
+	     -o dist/${VERSION}.tar HEAD) &&                         \
+	(cd dist; tar -xf ${VERSION}.tar; rm ${VERSION}.tar) &&      \
+	(cd dist; mv ${VERSION}/dist/upsource.spec ${VERSION}/upsource.spec) &&    \
+	touch $@;
+
+dist/rpms.built: dist/rpms.setup
+	rpmbuild -ta \
+	         --define="_rpmdir ${CWD}/dist" \
+	         --define="_srcrpmdir ${CWD}/dist" \
+	         --define="_gpg_name ${GPGID}" \
+	         --define="__gpg ${GPG}" \
+	   dist/${VERSION}.tar
+	touch $@;
+
 .PHONY: build config_state initscripts installdirs install clean \
 	debian debclean debfresh freshdeb newdeb \
 	upload-debs upload-deb update-apt
@@ -171,6 +190,17 @@ debfresh freshdeb newdeb: debclean
 	  echo AWK changed                   \
 	  mv .awk.tmp .awk;                  \
 	else rm .awk.tmp;                    \
+	fi
+
+.log:
+	@echo ${LOG} > .log.tmp
+	@if test ! -f .log; then             \
+	  echo ${LOG} > .log;                \
+	  rm .log.tmp;                       \
+	elif diff .log .log.tmp; then        \
+	  echo LOG changed                   \
+	  mv .log.tmp .log;                  \
+	else rm .log.tmp;                    \
 	fi
 
 .state: ${STATEFILES}
