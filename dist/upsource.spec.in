@@ -8,7 +8,7 @@ License:        GNU LGPL
 URL:            http://www.beingmeta.com/
 Source0:        @VERSION@.tar
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  make, sed
+#BuildRequires:  make, sed
 
 %description
 Provides for a configuration file which maps file system 
