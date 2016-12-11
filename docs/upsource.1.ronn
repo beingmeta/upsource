@@ -1,0 +1,40 @@
+[comment]: # ( -*- Mode: markdown; -*- )
+upsource(1) -- update local files from remote servers
+=========================================
+
+## SYNOPSIS
+
+`upsource` [<sourcetab>...]
+
+## DESCRIPTION
+
+This updates the local file system with data from remote sources.
+
+## DIAGNOSTICS
+
+Returns 0 when exiting normally, 1 otherwise.
+
+## FILES
+
+On startup, `fdconsole` normally reads an `.fdconfig` file from the
+user's home directory (if it exists). It can include `MODULES` or
+`LOADFILE` declarations. The loading of the `.fdconfig` file can be
+suppressed via the environment variable `FD_SKIP_DOTLOAD` or the
+config variable `DOTLOAD`.
+
+## ENVIRONMENT
+
+As with most FramerD programs, config variables can be set through
+environment variables prefixed with `FD`, so `FD_LOGLEVEL` will set
+the default loglevel.
+
+# AUTHOR
+
+Ken Haase <kh@beingmeta.com>
+
+## SEE ALSO
+
+upsource.srctab(8)
+
+
+
