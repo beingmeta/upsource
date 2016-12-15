@@ -18,18 +18,24 @@ generate_upsource_commands()
     echo "export UPSOURCE=@LIBDIR@;";
     echo "export STATEDIR=@RUNDIR@;";
     echo "export ETC=@ETC@;";
-    if test -f @ETC@/upsource.d/config; then
-	cat @ETC@/upsource.d/config; fi;
     if test -d ${ARG}; then
+	if test -f ${ARG}/config; then
+	    cat ${ARG}/config; fi; 
 	for tab in ${ARG}/*.srctab; do
 	    if test -f ${tab}; then
 		cat ${tab} | sourcetab_command;
 	    fi;
 	done;
     elif test -f ${ARG}; then 
+	DIRNAME=`dirname ${ARG}`
+	if test -f ${DIRNAME}/.upsource; then
+	    cat ${DIRNAME}/.upsource; 
+	elif test -f ~/.upsource; then
+	    cat ~/.upsource; ;
+	fi
 	cat ${ARG} | sourcetab_command;
     else
-	echo "upsource usage: [sourcetab file or directory]";
+	echo "usage: upsource [sourcetab file or directory]";
 	exit;
     fi
 }
@@ -37,6 +43,7 @@ generate_upsource_commands()
 for pre in @LIBDIR@/handlers/*.pre; do
     if test -x ${pre}; then ${pre}; fi; done
 
+# With no arguments, process the system upsource.d directory
 if test $# -eq 0; then
     generate_upsource_commands @ETC@/upsource.d | bash;
 else 
