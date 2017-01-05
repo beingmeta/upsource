@@ -31,7 +31,7 @@ generate_upsource_commands()
 	if test -f ${DIRNAME}/.upsource; then
 	    cat ${DIRNAME}/.upsource; 
 	elif test -f ~/.upsource; then
-	    cat ~/.upsource; ;
+	    cat ~/.upsource;
 	fi
 	cat ${ARG} | sourcetab_command;
     else
