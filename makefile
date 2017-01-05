@@ -4,6 +4,7 @@ RUN		= $(shell if test -f .run; then cat .run; else echo /var/run; fi)
 LOG		= $(shell if test -f .log; then cat .log; else echo /var/log; fi)
 AWK		= $(shell etc/getawk)
 CWD		= $(shell pwd)
+APTREPO		= /srv/repo/apt
 YUMREPO   	= dev:/srv/repo/yum/beingmeta/noarch
 YUMHOST   	= dev
 YUMUPDATE 	= /srv/repo/scripts/freshyum
@@ -128,8 +129,24 @@ dist/debs.uploaded: dist/debs.signed
 
 upload-debs upload-deb: dist/debs.uploaded
 
-update-apt: dist/debs.uploaded
-	ssh dev /srv/repo/apt/scripts/getincoming
+update-local-apt-repo: dist/debs.signed
+	for change in dist/*.changes; do \
+	  reprepro -Vb ${APTREPO} include ${CODENAME} $${change} && \
+	  rm -f $${change}; \
+	done
+
+update-remote-apt-repo: dist/debs.signed
+	cd dist; for change in *.changes; do \
+	  dupload -c --nomail --to ${CODENAME} $${change} && \
+	  rm -f $${change}; \
+	done
+
+update-apt update-apt-repo: dist/debs.signed
+	if test -d ${APTREPO}; then	\
+	  make update-local-apt-repo;	\
+	else				\
+	  make update-remote-apt-repo;	\
+	fi;
 
 debclean:
 	rm -rf dist/upsource-* dist/debs.* dist/*.deb dist/*.changes
