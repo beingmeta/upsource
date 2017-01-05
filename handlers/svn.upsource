@@ -10,6 +10,9 @@ if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test ! -z "${SSH_KEY}"; then
 	export SVN_SSH="${SVN_SSH} -i ${SSH_KEY}"; fi
 fi
+if test ! -d ${MOUNT}; then
+   mkdir -p ${MOUNT};
+fi;
 if test -d ${MOUNT}/.svn; then
    cd ${MOUNT}; ${SVN} update;
 else

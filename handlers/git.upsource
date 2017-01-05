@@ -11,6 +11,10 @@ if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test ! -z "${SSH_KEY}"; then
 	export GIT_SSH_COMMAND="${GIT_SSH_COMMAND} -i ${SSH_KEY}"; fi
 fi;    
+if test ! -d ${MOUNT}; then
+   mkdir -p ${MOUNT};
+fi;
+echo ssh=${GIT_SSH_COMMAND}
 # ?? Might need to handle cases where $BRANCH changes
 if test -d $MOUNT/.git; then
    cd ${MOUNT}; ${GIT} checkout ${BRANCH}; ${GIT} pull
