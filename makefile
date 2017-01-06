@@ -103,17 +103,19 @@ install-config: install-dirs
               ${DESTDIR}${ETC}/upsource.d/config;		\
 	fi;
 
-install-core: build install-dirs install-config install-inits
+install-core: build install-dirs
 	@echo "Installing upsource script and support files"
 	@${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
 	@${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
 	@echo "Installing upsource handlers"
-	@${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
+	${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/svn.upsource ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/s3.upsource ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/pre.sh ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/post.sh ${DESTDIR}${LIBDIR}/handlers
+
+install: build install-dirs install-config install-inits
 
 xinstall:
 	sudo make install
