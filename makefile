@@ -62,8 +62,8 @@ sourcetab.awk: sourcetab.awk.in .state
 	@echo "Generated $@"
 
 install-dirs:
-	@${INSTALLDIR} ${ETC}
-	@${INSTALLDIR} ${ETC}/upsource.d
+	@${INSTALLDIR} ${DESTDIR}${ETC}
+	@${INSTALLDIR} ${DESTDIR}${ETC}/upsource.d
 	@${INSTALLDIR} ${DESTDIR}${PREFIX}/bin
 	@${INSTALLDIR} ${DESTDIR}${RUNDIR}
 	@${INSTALLDIR} ${DESTDIR}${LIBDIR}
@@ -103,7 +103,7 @@ install-config: install-dirs
               ${DESTDIR}${ETC}/upsource.d/config;		\
 	fi;
 
-install: build install-dirs install-config
+install-core: build install-dirs install-config install-init
 	@echo "Installing upsource script and support files"
 	@${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
 	@${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
