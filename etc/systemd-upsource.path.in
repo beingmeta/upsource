@@ -5,7 +5,12 @@
 #  the Free Software Foundation; either version 2.1 of the License, or
 #  (at your option) any later version.
 
+[Unit]
+Description=Watch for changes to the upsource.d config directory
+
 [Path]
-Description=Check for source tab updates or changes
-PathExistsGlob=/etc/upsource.d/*.srctab
-PathChanged=/etc/upsource.d/
+PathModified=/etc/upsource.d/
+
+[Install]
+WantedBy=upsource.service
+
