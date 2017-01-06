@@ -10,8 +10,8 @@ Description=Create/update srctab associations
 DefaultDependencies=no
 Conflicts=shutdown.target
 Before=framerd.service
+After=framerd.service cloud-final.service
 Requires=network.target local-fs.target
-
 
 [Service]
 ExecStart=/usr/bin/upsource /etc/upsource.d/
