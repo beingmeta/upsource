@@ -20,7 +20,7 @@ CODENAME=beingmeta
 DESTDIR=
 INSTALLDIR=install -d
 INSTALLBIN=install -m 555
-INSTALLFILE=install -D -m 644
+INSTALLFILE=install -m 644
 
 LIBDIR=${PREFIX}/lib/upsource
 RUNDIR=${RUN}/upsource
@@ -72,30 +72,27 @@ install-dirs:
 install-inits: install-sysv install-upstart install-systemd
 
 install-systemd: install-dirs
-	@echo "Installing systemd units"
+	@echo "# (upsource/makefile) Installing systemd units"
 	@${INSTALLDIR} ${DESTDIR}/lib/systemd/system
 	@${INSTALLFILE} etc/systemd-upsource.service \
 		${DESTDIR}/lib/systemd/system/upsource.service
 	@${INSTALLFILE} etc/systemd-upsource.path \
 		${DESTDIR}/lib/systemd/system/upsource.path
-	if test -z "${DESTDIR}"; then	\
-	  sudo systemctl daemon-reload;	\
-	fi
 
 install-upstart: install-dirs
-	@echo "Installing upstart inits"
+	@echo "# (upsource/makefile) Installing upstart inits"
 	@${INSTALLDIR} ${DESTDIR}/etc/init
 	@${INSTALLFILE} etc/upstart-upsource.conf \
 		${DESTDIR}/etc/init/upsource.conf
 
 install-sysv: install-dirs
-	@echo "Installing sysv scripts"
+	@echo "# (upsource/makefile) Installing sysv scripts"
 	@${INSTALLDIR} ${DESTDIR}/etc/init.d
 	@${INSTALLBIN} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
 
 install-config: install-dirs
 	@if test ! -f ${DESTDIR}${ETC}/upsource.d/config; then	\
-	  echo "Installing a default upsource config";		\
+	  echo "# (upsource/makefile) Installing a default upsource config";		\
 	  ${INSTALLFILE} config.ex.sh				\
 	     ${DESTDIR}${ETC}/upsource.d/config;		\
 	else							\
@@ -104,10 +101,11 @@ install-config: install-dirs
 	fi;
 
 install-core: build install-dirs
-	@echo "Installing upsource script and support files"
+	@echo "# (upsource/makefile) Installing upsource script and support files"
+	@${INSTALLDIR} ${DESTDIR}${PREFIX}/bin
 	@${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
 	@${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
-	@echo "Installing upsource handlers"
+	@echo "# (upsource/makefile) Installing upsource handlers"
 	${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/svn.upsource ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
@@ -115,7 +113,7 @@ install-core: build install-dirs
 	@${INSTALLBIN} handlers/pre.sh ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/post.sh ${DESTDIR}${LIBDIR}/handlers
 
-install: build install-core install-dirs install-config install-inits
+install: build install-core install-dirs install-config
 
 xinstall:
 	sudo make install
