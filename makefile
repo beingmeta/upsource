@@ -103,7 +103,7 @@ install-config: install-dirs
               ${DESTDIR}${ETC}/upsource.d/config;		\
 	fi;
 
-install-core: build install-dirs install-config install-init
+install-core: build install-dirs install-config install-inits
 	@echo "Installing upsource script and support files"
 	@${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
 	@${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
