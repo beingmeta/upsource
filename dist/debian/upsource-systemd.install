@@ -1,4 +1,6 @@
 lib/systemd/system/upsource.service
+lib/systemd/system/upsource.path
+
 
 
 

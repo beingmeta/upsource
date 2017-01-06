@@ -39,8 +39,8 @@ SPEC_REWRITES=-e "s:@VERSION@:${VERSION}:g" \
 	      -e "s:@BASEVERSION@:${BASEVERSION}:g" \
 	      -e "s:@RELEASE@:${RELEASE}:g"
 
-INITSCRIPTS=etc/systemd-upsource.service etc/sysv-upsource.sh etc/upstart-upsource.conf
-
+INITSCRIPTS=etc/systemd-upsource.service etc/systemd-upsource.path \
+	etc/sysv-upsource.sh etc/upstart-upsource.conf
 
 etc/%: etc/%.in .state
 	@sed ${REWRITES} < $< > $@
@@ -91,6 +91,8 @@ install: installdirs build installconfig
 	${INSTALLBIN} handlers/post.sh ${DESTDIR}${LIBDIR}/handlers
 	${INSTALLFILE} etc/systemd-upsource.service \
 		${DESTDIR}/lib/systemd/system/upsource.service
+	${INSTALLFILE} etc/systemd-upsource.path \
+		${DESTDIR}/lib/systemd/system/upsource.path
 	${INSTALLBIN} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
 	${INSTALLFILE} etc/upstart-upsource.conf \
 		${DESTDIR}/etc/init/upsource.conf
