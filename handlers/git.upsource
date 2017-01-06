@@ -3,18 +3,18 @@ SOURCE=$2
 BRANCH=${BRANCH:-master}
 GIT="git ${GITFLAGS}"
 source ${UPSOURCE}/handlers/pre.sh;
+export GIT_SSH_COMMAND
 if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test -z "${GIT_SSH_COMMAND}"; then
-	export GIT_SSH_COMMAND="ssh -q -o \"StrictHostKeyChecking no\" "; fi
+	GIT_SSH_COMMAND="ssh -q -o \"StrictHostKeyChecking no\" "; fi
     if test ! -z "${SSH_USER}"; then
-	export GIT_SSH_COMMAND="${GIT_SSH_COMMAND} -l ${SSH_USER}"; fi
+	GIT_SSH_COMMAND="${GIT_SSH_COMMAND} -l ${SSH_USER}"; fi
     if test ! -z "${SSH_KEY}"; then
-	export GIT_SSH_COMMAND="${GIT_SSH_COMMAND} -i ${SSH_KEY}"; fi
+	GIT_SSH_COMMAND="${GIT_SSH_COMMAND} -i ${SSH_KEY}"; fi
 fi;    
 if test ! -d ${MOUNT}; then
    mkdir -p ${MOUNT};
 fi;
-# ?? Might need to handle cases where $BRANCH changes
 if test -d $MOUNT/.git; then
    cd ${MOUNT}; ${GIT} checkout ${BRANCH}; ${GIT} pull
 else
