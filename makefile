@@ -71,7 +71,7 @@ install-dirs:
 
 install-inits: install-sysv install-upstart install-systemd
 
-install-systemd:
+install-systemd: install-dirs
 	@echo "Installing systemd units"
 	@${INSTALLDIR} ${DESTDIR}/lib/systemd/system
 	@${INSTALLFILE} etc/systemd-upsource.service \
@@ -82,13 +82,13 @@ install-systemd:
 	  sudo systemctl daemon-reload;	\
 	fi
 
-install-upstart:
+install-upstart: install-dirs
 	@echo "Installing upstart inits"
 	@${INSTALLDIR} ${DESTDIR}/etc/init
 	@${INSTALLFILE} etc/upstart-upsource.conf \
 		${DESTDIR}/etc/init/upsource.conf
 
-install-sysv:
+install-sysv: install-dirs
 	@echo "Installing sysv scripts"
 	@${INSTALLDIR} ${DESTDIR}/etc/init.d
 	@${INSTALLBIN} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
@@ -115,7 +115,7 @@ install-core: build install-dirs
 	@${INSTALLBIN} handlers/pre.sh ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/post.sh ${DESTDIR}${LIBDIR}/handlers
 
-install: build install-dirs install-config install-inits
+install: build install-core install-dirs install-config install-inits
 
 xinstall:
 	sudo make install
