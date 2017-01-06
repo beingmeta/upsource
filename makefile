@@ -62,51 +62,58 @@ sourcetab.awk: sourcetab.awk.in .state
 	@echo "Generated $@"
 
 install-dirs:
-	${INSTALLDIR} ${ETC}
-	${INSTALLDIR} ${ETC}/upsource.d
-	${INSTALLDIR} ${DESTDIR}${PREFIX}/bin
-	${INSTALLDIR} ${DESTDIR}${RUNDIR}
-	${INSTALLDIR} ${DESTDIR}${LIBDIR}
-	${INSTALLDIR} ${DESTDIR}${LIBDIR}/handlers
+	@${INSTALLDIR} ${ETC}
+	@${INSTALLDIR} ${ETC}/upsource.d
+	@${INSTALLDIR} ${DESTDIR}${PREFIX}/bin
+	@${INSTALLDIR} ${DESTDIR}${RUNDIR}
+	@${INSTALLDIR} ${DESTDIR}${LIBDIR}
+	@${INSTALLDIR} ${DESTDIR}${LIBDIR}/handlers
 
 install-inits: install-sysv install-upstart install-systemd
 
 install-systemd:
-	${INSTALLDIR} ${DESTDIR}/lib/systemd/system
-	${INSTALLFILE} etc/systemd-upsource.service \
+	@echo "Installing systemd units"
+	@${INSTALLDIR} ${DESTDIR}/lib/systemd/system
+	@${INSTALLFILE} etc/systemd-upsource.service \
 		${DESTDIR}/lib/systemd/system/upsource.service
-	${INSTALLFILE} etc/systemd-upsource.path \
+	@${INSTALLFILE} etc/systemd-upsource.path \
 		${DESTDIR}/lib/systemd/system/upsource.path
 	if test -z "${DESTDIR}"; then	\
 	  sudo systemctl daemon-reload;	\
 	fi
 
 install-upstart:
-	${INSTALLDIR} ${DESTDIR}/etc/init
-	${INSTALLFILE} etc/upstart-upsource.conf \
+	@echo "Installing upstart inits"
+	@${INSTALLDIR} ${DESTDIR}/etc/init
+	@${INSTALLFILE} etc/upstart-upsource.conf \
 		${DESTDIR}/etc/init/upsource.conf
 
 install-sysv:
-	${INSTALLDIR} ${DESTDIR}/etc/init.d
-	${INSTALLBIN} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
+	@echo "Installing sysv scripts"
+	@${INSTALLDIR} ${DESTDIR}/etc/init.d
+	@${INSTALLBIN} etc/sysv-upsource.sh ${DESTDIR}/etc/init.d/upsource
 
 install-config: install-dirs
-	if test ! -f ${DESTDIR}${ETC}/upsource.d/config; then             \
-	  ${INSTALLFILE} config.ex.sh ${DESTDIR}${ETC}/upsource.d/config; \
-	else                                                              \
-	  echo "Not overwriting current "                                 \
-              ${DESTDIR}${ETC}/upsource.d/config;                         \
-	fi
+	@if test ! -f ${DESTDIR}${ETC}/upsource.d/config; then	\
+	  echo "Installing a default upsource config";		\
+	  ${INSTALLFILE} config.ex.sh				\
+	     ${DESTDIR}${ETC}/upsource.d/config;		\
+	else							\
+	  echo "# (upsource/makefile) Not overwriting current "	\
+              ${DESTDIR}${ETC}/upsource.d/config;		\
+	fi;
 
 install: build install-dirs install-config
-	${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
-	${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
-	${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
-	${INSTALLBIN} handlers/svn.upsource ${DESTDIR}${LIBDIR}/handlers
-	${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
-	${INSTALLBIN} handlers/s3.upsource ${DESTDIR}${LIBDIR}/handlers
-	${INSTALLBIN} handlers/pre.sh ${DESTDIR}${LIBDIR}/handlers
-	${INSTALLBIN} handlers/post.sh ${DESTDIR}${LIBDIR}/handlers
+	@echo "Installing upsource script and support files"
+	@${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
+	@${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
+	@echo "Installing upsource handlers"
+	@${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
+	@${INSTALLBIN} handlers/svn.upsource ${DESTDIR}${LIBDIR}/handlers
+	@${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
+	@${INSTALLBIN} handlers/s3.upsource ${DESTDIR}${LIBDIR}/handlers
+	@${INSTALLBIN} handlers/pre.sh ${DESTDIR}${LIBDIR}/handlers
+	@${INSTALLBIN} handlers/post.sh ${DESTDIR}${LIBDIR}/handlers
 
 xinstall:
 	sudo make install
