@@ -110,6 +110,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files systemd
 /lib/systemd/system/upsource.service
+/lib/systemd/system/upsource.path
 
 %changelog
 * Mon Dec 5 2016 beingmeta repository manager <repoman@beingmeta.com> 0.5
