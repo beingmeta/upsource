@@ -2,7 +2,7 @@ ETC		= $(shell if test -f .etc; then cat .etc; else echo /etc; fi)
 PREFIX		= $(shell if test -f .prefix; then cat .prefix; else echo /usr; fi)
 RUN		= $(shell if test -f .run; then cat .run; else echo /var/run; fi)
 LOG		= $(shell if test -f .log; then cat .log; else echo /var/log; fi)
-SHELL		= $(shell if test -f .shell; then cat .shell; else echo /bin/sh; fi)
+UPSHELL		= $(shell if test -f .shell; then cat .shell; else echo /bin/sh; fi)
 AWK		= $(shell etc/getawk)
 CWD		= $(shell pwd)
 APTREPO		= /srv/repo/apt
@@ -32,7 +32,7 @@ REWRITES=-e "s:@PREFIX@:${PREFIX}:g" \
 	 -e "s:@LIBDIR@:${LIBDIR}:g" \
 	 -e "s:@RUNDIR@:${RUNDIR}:g" \
 	 -e "s:@LOGDIR@:${LOGDIR}:g" \
-	 -e "s:@SHELL@:${SHELL}:g"   \
+	 -e "s:@SHELL@:${UPSHELL}:g"   \
 	 -e "s:@AWK@:${AWK}:g"       \
 	 -e "s:@ETC@:${ETC}:g" 
 SPEC_REWRITES=-e "s:@VERSION@:${VERSION}:g" \
