@@ -46,18 +46,29 @@ generate_upsource_commands()
 for pre in @LIBDIR@/handlers/*.pre; do
     if test -x ${pre}; then ${pre}; fi; done
 
+idu=`id -u`
+
 # With no arguments, process the system upsource.d directory
 if test $# -eq 0; then
-    generate_upsource_commands @ETC@/upsource.d | sh;
+    if test test "${idu}" -eq 0; then
+	generate_upsource_commands @ETC@/upsource.d | sh;
+    elif test -d ~/.upsource.d/; then
+	generate_upsource_commands ~/.upsource.d | sh;
+    else
+	echo "# (upsource) No ~/.upsource.d/, trying @ETC@/upsource.d/";
+	generate_upsource_commands @ETC@/upsource.d | sh;
+    fi;
 else 
     for tab in $*; do \
       generate_upsource_commands ${tab} | sh; 
     done;
 fi
 
+# Run any .post files placed in the run dir
 for run in @RUNDIR@/*.post; do
     if test -f ${run}; then ${run}; fi; done
 
+# Run any .post files in the handlers dir
 for post in @LIBDIR@/handlers/*.post; do
     if test -x ${post}; then ${post}; fi; done
 
