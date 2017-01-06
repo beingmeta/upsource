@@ -2,7 +2,12 @@ MOUNT=$1
 SOURCE=$2
 BRANCH=${BRANCH:-master}
 GIT="git ${GITFLAGS}"
-source ${UPSOURCE}/handlers/pre.sh;
+if test -f ${UPSOURCE_LIB}/handlers/pre.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.sh;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/pre.git.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.git.sh;
+fi;
 export GIT_SSH_COMMAND
 if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test -z "${GIT_SSH_COMMAND}"; then
@@ -15,9 +20,14 @@ fi;
 if test ! -d ${MOUNT}; then
    mkdir -p ${MOUNT};
 fi;
-if test -d $MOUNT/.git; then
+if test -d ${MOUNT}/.git; then
    cd ${MOUNT}; ${GIT} checkout ${BRANCH}; ${GIT} pull
 else
    ${GIT} clone -b ${BRANCH} ${SOURCE} ${MOUNT};
 fi;
-source ${UPSOURCE}/handlers/post.sh;
+if test -f ${UPSOURCE_LIB}/handlers/post.sh; then
+  . ${UPSOURCE_LIB}/handlers/post.sh;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/post.git.sh; then
+  . ${UPSOURCE_LIB}/handlers/post.git.sh;
+fi;

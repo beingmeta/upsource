@@ -1,10 +1,10 @@
 #!/bin/sh
 PREFIX=@PREFIX@
-UPSOURCE=@LIBDIR@
-STATEDIR=@RUNDIR@
-LOGDIR=@LOGDIR@
+UPSOURCE_SHELL=@SHELL@
+UPSOURCE_LIB=@LIBDIR@
+UPSOURCE_RUN=@RUNDIR@
+UPSOURCE_LOG=@LOGDIR@
 AWK=@AWK@
-CONFIG=${UPSOURCE_CONFIG:-@ETC@/upsource.d/config}
 
 sourcetab_command()
 {
@@ -13,11 +13,13 @@ sourcetab_command()
 generate_upsource_commands()
 {
     ARG=$1
-    echo "export SSH_USER SSH_KEY OWNER GROUP SOURCETAB SOURCETABD;";
+    echo "export UPSOURCE_OWNER UPSOURCE_GROUP UPSOURCE_MODE";
     echo "export PREFIX=@PREFIX@;";
-    echo "export UPSOURCE=@LIBDIR@;";
-    echo "export STATEDIR=@RUNDIR@;";
+    echo "export UPSOURCE_LIB=@LIBDIR@;";
+    echo "export UPSOURCE_RUN=@RUNDIR@;";
+    echo "export UPSOURCE_LOG=@LOGDIR@;";
     echo "export ETC=@ETC@;";
+    echo "export SSH_USER SSH_KEY;";
     if test -d ${ARG}; then
 	if test -f ${ARG}/config; then
 	    cat ${ARG}/config; fi; 
@@ -28,9 +30,10 @@ generate_upsource_commands()
 	done;
     elif test -f ${ARG}; then 
 	DIRNAME=`dirname ${ARG}`
-	if test -f ${DIRNAME}/.upsource; then
-	    cat ${DIRNAME}/.upsource; 
-	elif test -f ~/.upsource; then
+	if test -f ${DIRNAME}/config; then
+	    cat ${DIRNAME}/config; 
+	fi
+	if test -f ~/.upsource; then
 	    cat ~/.upsource;
 	fi
 	cat ${ARG} | sourcetab_command;
@@ -45,10 +48,10 @@ for pre in @LIBDIR@/handlers/*.pre; do
 
 # With no arguments, process the system upsource.d directory
 if test $# -eq 0; then
-    generate_upsource_commands @ETC@/upsource.d | bash;
+    generate_upsource_commands @ETC@/upsource.d | sh;
 else 
     for tab in $*; do \
-      generate_upsource_commands ${tab} | bash; 
+      generate_upsource_commands ${tab} | sh; 
     done;
 fi
 

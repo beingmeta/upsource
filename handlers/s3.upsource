@@ -1,6 +1,11 @@
 MOUNT=$1
 SOURCE=$2
-source ${UPSOURCE}/handlers/pre.sh;
+if test -f ${UPSOURCE_LIB}/handlers/pre.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.sh;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/pre.s3.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.s3.sh;
+fi;
 if test ! -z "${CONFIG}"; then
   export AWS_CONFIG_FILE="${CONFIG}";
 fi
@@ -10,5 +15,13 @@ fi
 if test ! -d ${MOUNT}; then
    mkdir -p ${MOUNT};
 fi;
+
 aws ${S3FLAGS} s3 sync ${SOURCE} ${MOUNT}
-source ${UPSOURCE}/handlers/post.sh;
+echo ${SOURCE} > ${MOUNT}/.s3root
+
+if test -f ${UPSOURCE_LIB}/handlers/post.sh; then
+  . ${UPSOURCE_LIB}/handlers/post.sh;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/post.s3.sh; then
+  . ${UPSOURCE_LIB}/handlers/post.s3.sh;
+fi;

@@ -1,7 +1,12 @@
 MOUNT=$1
 SOURCE=$2
 SVN="svn --non-interactive ${SVNFLAGS}"
-source ${UPSOURCE}/handlers/pre.sh;
+if test -f ${UPSOURCE_LIB}/handlers/pre.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.sh;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/pre.svn.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.svn.sh;
+fi;
 if (test ! -z "${SSH_USER}") || (test ! -z "${SSH_KEY}"); then
     if test -z "${SVN_SSH}"; then
 	export SVN_SSH="ssh -q -o \"StrictHostKeyChecking no\" "; fi
@@ -18,4 +23,9 @@ if test -d ${MOUNT}/.svn; then
 else
    ${SVN} checkout ${SOURCE} ${MOUNT};
 fi;
-source ${UPSOURCE}/handlers/post.sh;
+if test -f ${UPSOURCE_LIB}/handlers/post.sh; then
+  . ${UPSOURCE_LIB}/handlers/post.sh;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/post.svn.sh; then
+  . ${UPSOURCE_LIB}/handlers/post.svn.sh;
+fi;

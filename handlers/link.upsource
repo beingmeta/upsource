@@ -1,15 +1,25 @@
 MOUNT=$1
 SOURCE=$2
-source ${UPSOURCE}/handlers/pre.sh;
-if test -L $MOUNT && test `readlink $MOUNT` = $SOURCE; then
+if test -f ${UPSOURCE_LIB}/handlers/pre.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.sh;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/pre.link.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.link.sh;
+fi;
+if test -L %{MOUNT} && test `readlink %{MOUNT}` = ${SOURCE}; then
    echo "Already linked";
-elif test -f $MOUNT || test -d $MOUNT; then
-   if test -f $MOUNT.bak; then
-     echo "Not overwriting $MOUNT with existing $MOUNT.bak";
+elif test -f ${MOUNT} || test -d ${MOUNT}; then
+   if test -f ${MOUNT}.bak; then
+     echo "Not overwriting %{MOUNT} with existing %{MOUNT}.bak";
      exit;
    fi;
-   mv $MOUNT $MOUNT.bak;
+   mv ${MOUNT} ${MOUNT}.bak;
 else
-  ln -sf $SOURCE $MOUNT;
+  ln -sf ${SOURCE} ${MOUNT};
 fi;
-source ${UPSOURCE}/handlers/post.sh;
+if test -f ${UPSOURCE_LIB}/handlers/post.sh; then
+  . ${UPSOURCE_LIB}/handlers/post.sh;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/post.link.sh; then
+  . ${UPSOURCE_LIB}/handlers/post.link.sh;
+fi;
