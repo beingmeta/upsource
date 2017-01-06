@@ -1,22 +1,48 @@
+#!/bin/sh
+# -*- Mode: shell-script; -*-
 MOUNT=$1
 SOURCE=$2
+AWSCLI=`which aws`
+export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION
+export AWS_CONFIG_FILE
+
 if test -f ${UPSOURCE_LIB}/handlers/pre.sh; then
   . ${UPSOURCE_LIB}/handlers/pre.sh;
 fi;
 if test -f ${UPSOURCE_LIB}/handlers/pre.s3.sh; then
   . ${UPSOURCE_LIB}/handlers/pre.s3.sh;
 fi;
-if test ! -z "${CONFIG}"; then
-  export AWS_CONFIG_FILE="${CONFIG}";
+
+AWSCLI_FLAGS=""
+if test ! -z "${AWS_ID}"; then
+    AWS_ACCESS_KEY_ID="${AWS_ID}";
 fi
-if test ! -z "${CREDENTIALS}"; then
-  export AWS_SHARED_CREDENTIALS_FILE="${CREDENTIALS}";
+if test ! -z "${AWS_SECRET}"; then
+    AWS_SECRET_ACCESS_KEY="${AWS_SECRET}";
 fi
+if test ! -z "${AWS_CONFIG}"; then
+  export AWS_CONFIG_FILE="${AWS_CONFIG}";
+fi
+
+if test ! -z "${AWS_REGION}"; then
+    AWSCLI_ARGS="--region ${AWS_REGION} ${AWSCLI_ARGS}";
+fi
+
+if test ! -z "${AWS_PROFILE}"; then
+    AWSCLI_ARGS="--profile ${AWS_PROFILE} ${AWSCLI_ARGS}";
+fi
+
 if test ! -d ${MOUNT}; then
    mkdir -p ${MOUNT};
 fi;
 
-aws ${S3FLAGS} s3 sync ${SOURCE} ${MOUNT}
+if test ! -z "${UPSOURCE_TRACE}"; then
+   echo "# (upsource)" mount=${MOUNT} source=${SOURCE} >&2;
+   echo "# (upsource)" owner=${UPSOURCE_GROUP} group=${UPSOURCE_GROUP} \
+   	mode=${UPSOURCE_MODE} >&2;
+fi
+
+${AWSCLI} ${AWSCLI_ARGS} s3 sync ${SOURCE} ${MOUNT}
 echo ${SOURCE} > ${MOUNT}/.s3root
 
 if test -f ${UPSOURCE_LIB}/handlers/post.sh; then

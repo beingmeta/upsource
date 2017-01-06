@@ -20,6 +20,12 @@ fi;
 if test ! -d ${MOUNT}; then
    mkdir -p ${MOUNT};
 fi;
+if test ! -z "${UPSOURCE_TRACE}"; then
+   echo "# (upsource) mount=${MOUNT} source=${SOURCE}" >&2;
+   echo "# (upsource) " "owner=${UPSOURCE_GROUP} group=${UPSOURCE_GROUP}" \
+   	"mode=${UPSOURCE_MODE}" >&2;
+   echo "# (upsource) sshcmd=${GIT_SSH_COMMAND}" >&2;
+fi
 if test -d ${MOUNT}/.git; then
    cd ${MOUNT}; ${GIT} checkout ${BRANCH}; ${GIT} pull
 else

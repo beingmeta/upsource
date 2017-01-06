@@ -1,3 +1,5 @@
+#!/bin/sh
+# -*- Mode: shell-script; -*-
 MOUNT=$1
 SOURCE=$2
 if test -f ${UPSOURCE_LIB}/handlers/pre.sh; then
@@ -7,12 +9,13 @@ if test -f ${UPSOURCE_LIB}/handlers/pre.link.sh; then
   . ${UPSOURCE_LIB}/handlers/pre.link.sh;
 fi;
 if test -L %{MOUNT} && test `readlink %{MOUNT}` = ${SOURCE}; then
-   echo "Already linked";
+   echo "# (upsource) Already linked" >&2;
 elif test -f ${MOUNT} || test -d ${MOUNT}; then
    if test -f ${MOUNT}.bak; then
-     echo "Not overwriting %{MOUNT} with existing %{MOUNT}.bak";
+     echo "# (upsource) Not overwriting existing ${MOUNT}.bak" >&2;
      exit;
    fi;
+   echo "# (upsource) Moving existing ${MOUNT} to ${MOUNT}.bak"  >&2;
    mv ${MOUNT} ${MOUNT}.bak;
 else
   ln -sf ${SOURCE} ${MOUNT};
