@@ -6,3 +6,8 @@
 
 override_dh_auto_configure:
 	make PREFIX=/usr RUN=/var/run ETC=/etc
+
+override_dh_auto_install:
+	dh_auto_install -- install-config install-inits install-dirs
+
+
