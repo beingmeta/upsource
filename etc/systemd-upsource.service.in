@@ -9,8 +9,8 @@
 Description=Create/update srctab associations
 DefaultDependencies=no
 Conflicts=shutdown.target
-ConditionPathExists /etc/upsource.d/config
-ConditionPathExistsGlob /etc/upsource.d/*.srctab
+ConditionPathExists=/etc/upsource.d/config
+ConditionPathExistsGlob=/etc/upsource.d/*.srctab
 After=cloud-final.service
 Requires=network.target local-fs.target
 
