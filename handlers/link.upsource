@@ -8,8 +8,8 @@ fi;
 if test -f ${UPSOURCE_LIB}/handlers/pre.link.sh; then
   . ${UPSOURCE_LIB}/handlers/pre.link.sh;
 fi;
-if test -L %{MOUNT} && test `readlink %{MOUNT}` = ${SOURCE}; then
-   echo "# (upsource) Already linked" >&2;
+if test -L ${MOUNT} && test `readlink ${MOUNT}` = ${SOURCE}; then
+   echo "# (upsource) ${MOUNT} is already linked to ${SOURCE}" >&2;
 elif test -f ${MOUNT} || test -d ${MOUNT}; then
    if test -f ${MOUNT}.bak; then
      echo "# (upsource) Not overwriting existing ${MOUNT}.bak" >&2;
@@ -17,6 +17,7 @@ elif test -f ${MOUNT} || test -d ${MOUNT}; then
    fi;
    echo "# (upsource) Moving existing ${MOUNT} to ${MOUNT}.bak"  >&2;
    mv ${MOUNT} ${MOUNT}.bak;
+   ln -sf ${SOURCE} ${MOUNT};
 else
   ln -sf ${SOURCE} ${MOUNT};
 fi;
