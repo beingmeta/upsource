@@ -50,7 +50,7 @@ idu=`id -u`
 
 # With no arguments, process the system upsource.d directory
 if test $# -eq 0; then
-    if test test "${idu}" -eq 0; then
+    if test "${idu}" -eq 0; then
 	generate_upsource_commands @ETC@/upsource.d | sh;
     elif test -d ~/.upsource.d/; then
 	generate_upsource_commands ~/.upsource.d | sh;
