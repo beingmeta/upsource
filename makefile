@@ -45,7 +45,7 @@ INITSCRIPTS=etc/systemd-upsource.service etc/systemd-upsource.path \
 etc/%: etc/%.in .state
 	@sed ${REWRITES} < $< > $@
 	@if test -x $<; then chmod a+x $@; fi
-	@echo "Generated $@"
+	@echo "# (upsource/makefile) Generated $@"
 build: upsource sourcetab.awk config_state initscripts
 
 initscripts: ${INITSCRIPTS}
@@ -55,11 +55,11 @@ config_state: ${STATEFILES}
 upsource: upsource.in .state
 	@sed ${REWRITES} < $< > $@
 	@chmod a+x $@
-	@echo "Generated $@"
+	@echo "# (upsource/makefile) Generated $@"
 
 sourcetab.awk: sourcetab.awk.in .state
 	@sed ${REWRITES} < $< > $@
-	@echo "Generated $@"
+	@echo "# (upsource/makefile) Generated $@"
 
 install-dirs:
 	@${INSTALLDIR} ${DESTDIR}${ETC}
