@@ -1,0 +1,8 @@
+#  This is part of the the systemd configuration for upsource
+
+[Unit]
+Description=Indicate that upsource has been run (at least once)
+Requires=upsource.service
+
+[Install]
+WantedBy=default.target

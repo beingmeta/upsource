@@ -40,7 +40,8 @@ SPEC_REWRITES=-e "s:@VERSION@:${VERSION}:g" \
 	      -e "s:@RELEASE@:${RELEASE}:g"
 
 INITSCRIPTS=etc/systemd-upsource.service etc/systemd-upsource.path \
-	etc/sysv-upsource.sh etc/upstart-upsource.conf
+	etc/systemd-upsource.target etc/upstart-upsource.conf \
+	etc/sysv-upsource.sh 
 
 etc/%: etc/%.in .state
 	@sed ${REWRITES} < $< > $@
@@ -74,6 +75,8 @@ install-inits: install-sysv install-upstart install-systemd
 install-systemd: install-dirs
 	@echo "# (upsource/makefile) Installing systemd units"
 	@${INSTALLDIR} ${DESTDIR}/lib/systemd/system
+	@${INSTALLFILE} etc/systemd-upsource.target \
+		${DESTDIR}/lib/systemd/system/upsource.target
 	@${INSTALLFILE} etc/systemd-upsource.service \
 		${DESTDIR}/lib/systemd/system/upsource.service
 	@${INSTALLFILE} etc/systemd-upsource.path \
