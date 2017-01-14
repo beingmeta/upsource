@@ -80,7 +80,7 @@ make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+make install install-config install-inits DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -110,6 +110,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files systemd
 /lib/systemd/system/upsource.service
+/lib/systemd/system/upsource.target
 /lib/systemd/system/upsource.path
 
 %changelog
