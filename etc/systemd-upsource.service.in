@@ -7,7 +7,6 @@
 
 [Unit]
 Description=Create/update srctab associations
-DefaultDependencies=no
 Conflicts=shutdown.target
 ConditionPathExists=/etc/upsource.d/config
 ConditionPathExistsGlob=/etc/upsource.d/*.srctab
