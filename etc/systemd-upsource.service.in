@@ -6,7 +6,6 @@ Conflicts=shutdown.target
 ConditionPathExists=/etc/upsource.d/config
 ConditionPathExistsGlob=/etc/upsource.d/*.srctab
 Requires=network.target local-fs.target
-After=cloud-final.service
 DefaultDependencies=false
 
 [Service]
