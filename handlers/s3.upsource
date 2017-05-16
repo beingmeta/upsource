@@ -38,8 +38,8 @@ fi;
 
 if test ! -z "${UPSOURCE_TRACE}"; then
    echo "# (upsource)" mount=${MOUNT} source=${SOURCE} >&2;
-   echo "# (upsource)" owner=${UPSOURCE_GROUP} group=${UPSOURCE_GROUP} \
-   	mode=${UPSOURCE_MODE} >&2;
+   echo "# (upsource)" owner=${OWNER} group=${GROUP} \
+   	mode=${FILEMODE} >&2;
 fi
 
 ${AWSCLI} ${AWSCLI_ARGS} s3 sync ${SOURCE} ${MOUNT}

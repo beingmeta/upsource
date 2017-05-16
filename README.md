@@ -20,7 +20,7 @@ variables have standard interpretations used by update handlers:
 
 * **OWNER** specifies the owner of the tree beneath *mountpoint*;
 * **GROUP** specifies the group of the tree beneath *mountpoint*;
-* **MODE** specifies the file mode (an argument to **chmod**) of the
+* **FILEMODE** specifies the file mode (an argument to **chmod**) of the
 tree beneath *mountpoint*;
 * **SSH_USER** specifies the username for SSH connections used by handlers;
 * **SSH_KEY** specifies the identity key for SSH connections used by handlers;

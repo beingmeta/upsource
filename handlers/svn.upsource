@@ -20,8 +20,8 @@ if test ! -d ${MOUNT}; then
 fi;
 if test ! -z "${UPSOURCE_TRACE}"; then
    echo "# (upsource)" mount=${MOUNT} source=${SOURCE} >&2;
-   echo "# (upsource)" owner=${UPSOURCE_GROUP} group=${UPSOURCE_GROUP} \
-   	mode=${UPSOURCE_MODE} >&2;
+   echo "# (upsource)" owner=${OWNER} group=${GROUP} \
+   	mode=${FILEMODE} >&2;
    echo "# (upsource)" sshcmd=${SVN_SSH} >&2;
 fi
 if test -d ${MOUNT}/.svn; then

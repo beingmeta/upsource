@@ -13,7 +13,7 @@ sourcetab_command()
 generate_upsource_commands()
 {
     ARG=$1
-    echo "export UPSOURCE_OWNER UPSOURCE_GROUP UPSOURCE_MODE";
+    echo "export OWNER GROUP BRANCH FILEMODE";
     echo "export PREFIX=@PREFIX@;";
     echo "export UPSOURCE_LIB=@LIBDIR@;";
     echo "export UPSOURCE_RUN=@RUNDIR@;";
