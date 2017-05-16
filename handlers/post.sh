@@ -12,9 +12,9 @@ if test -d "${MOUNT}" || test -h "${MOUNT}"; then
 	if test ! -z "${UPSOURCE_TRACE}"; then
 	    echo Setting group=${GROUP} for ${MOUNT} >&2;
 	fi;
-	${UPSOURCESUDO:-} chgrp -R ${UPSOURCE_GROUP} ${MOUNT};
+	${UPSOURCESUDO:-} chgrp -R ${GROUP} ${MOUNT};
     fi;
-    if test ! -z "${UPSOURCE_MODE}"; then
+    if test ! -z "${FILEMODE}"; then
 	if test ! -z "${UPSOURCE_TRACE}"; then
 	    echo Setting mode=${FILEMODE} for ${MOUNT} >&2;
 	fi;

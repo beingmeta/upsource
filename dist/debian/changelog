@@ -1,3 +1,9 @@
+upsource (0.5-8) unstable; urgency=medium
+
+  * Fixed bugs with rename
+
+ -- Ken Haase <kh@beingmeta.com>  Tue, 16 May 2017 21:36:10 +0000
+
 upsource (0.5-7) unstable; urgency=medium
 
   * Renamed UPSOURCE_OWNER, etc and made BRANCH configuration work
