@@ -1,3 +1,9 @@
+upsource (0.5-9) beingmeta; urgency=medium
+
+  * Change distribution to 'beingmeta'
+
+ -- Ken Haase <kh@beingmeta.com>  Tue, 16 May 2017 21:36:10 +0000
+
 upsource (0.5-8) unstable; urgency=medium
 
   * Fixed bugs with rename
