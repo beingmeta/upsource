@@ -16,7 +16,7 @@ RELEASE=$(shell echo ${VERSION} | sed -e "s/upsource-[[:digit:]]\+\.[[:digit:]]-
 
 GPG=$(shell which gpg2 || which gpg || echo gpg)
 GPGID=repoman@beingmeta.com
-CODENAME=beingmeta
+CODENAME=setup
 DESTDIR=
 INSTALLDIR=install -d
 INSTALLBIN=install -m 555
