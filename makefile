@@ -129,7 +129,7 @@ dist/debs.setup:
 	     -o dist/${VERSION}.tar HEAD) &&                         \
 	(cd dist; tar -xf ${VERSION}.tar; rm ${VERSION}.tar) &&      \
 	(cd dist; mv ${VERSION}/dist/debian ${VERSION}/debian) &&    \
-	(etc/gitchangelog upsource beingmeta                         \
+	(etc/gitchangelog upsource setup                             \
 	  < dist/debian/changelog                                    \
           > dist/${VERSION}/debian/changelog;) &&                    \
 	touch $@;
