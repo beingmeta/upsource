@@ -10,7 +10,7 @@ YUMREPO   	= dev:/srv/repo/yum/beingmeta/noarch
 YUMHOST   	= dev
 YUMUPDATE 	= /srv/repo/scripts/freshyum
 
-VERSION=$(shell etc/gitversion)
+VERSION=$(shell cat VERSION 2>/dev/null || u8_gitversion etc/base_version)
 BASEVERSION=$(shell echo ${VERSION} | sed -e "s/upsource-//g" -e "s/-[[:digit:]]\+//g")
 RELEASE=$(shell echo ${VERSION} | sed -e "s/upsource-[[:digit:]]\+\.[[:digit:]]-\+//g")
 
