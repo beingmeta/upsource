@@ -20,6 +20,7 @@ generate_upsource_commands()
     echo "export UPSOURCE_LOG=@LOGDIR@;";
     echo "export ETC=@ETC@;";
     echo "export SSH_USER SSH_KEY;";
+    echo "export GIT_SSH_USER GIT_SSH_KEY GIT_HTTP_LOGIN;";
     if test -d ${ARG}; then
 	if test -f ${ARG}/config; then
 	    cat ${ARG}/config; fi; 
