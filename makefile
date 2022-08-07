@@ -14,9 +14,6 @@ VERSION=$(shell cat VERSION 2>/dev/null || u8_gitversion etc/base_version)
 BASEVERSION=$(shell echo ${VERSION} | sed -e "s/upsource-//g" -e "s/-[[:digit:]]\+//g")
 RELEASE=$(shell echo ${VERSION} | sed -e "s/upsource-[[:digit:]]\+\.[[:digit:]]-\+//g")
 
-GPG=$(shell which gpg2 || which gpg || echo gpg)
-GPGID=repoman@beingmeta.com
-CODENAME=setup
 DESTDIR=
 INSTALLDIR=install -d
 INSTALLBIN=install -m 555
@@ -109,7 +106,8 @@ install-core: build install-dirs
 	@${INSTALLBIN} upsource ${DESTDIR}${PREFIX}/bin
 	@${INSTALLFILE} sourcetab.awk ${DESTDIR}${LIBDIR}
 	@echo "# (upsource/makefile) Installing upsource handlers"
-	${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
+	@${INSTALLBIN} handlers/git.upsource ${DESTDIR}${LIBDIR}/handlers
+	@${INSTALLBIN} handlers/rsync.upsource ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/svn.upsource ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/link.upsource ${DESTDIR}${LIBDIR}/handlers
 	@${INSTALLBIN} handlers/s3.upsource ${DESTDIR}${LIBDIR}/handlers
@@ -124,106 +122,9 @@ xinstall:
 clean:
 	rm -f sourceup sourcetab.awk ${INITSCRIPTS} ${STATEFILES}
 
-dist/debs.setup:
-	(git archive --prefix=${VERSION}/                            \
-	     -o dist/${VERSION}.tar HEAD) &&                         \
-	(cd dist; tar -xf ${VERSION}.tar; rm ${VERSION}.tar) &&      \
-	(cd dist; mv ${VERSION}/dist/debian ${VERSION}/debian) &&    \
-	(etc/gitchangelog upsource setup                             \
-	  < dist/debian/changelog                                    \
-          > dist/${VERSION}/debian/changelog;) &&                    \
-	touch $@;
-
-dist/debs.built: dist/debs.setup
-	(cd dist/${VERSION};                                         \
-	 dpkg-buildpackage -A -us -uc -sa -rfakeroot) &&             \
-	touch $@;
-
-dist/debs.signed: dist/debs.built
-	(cd dist; debsign --re-sign -k${GPGID} upsource_*_all.changes) && \
-	touch $@;
-
-debian debs dpkgs: dist/debs.signed
-
-dist/debs.uploaded: dist/debs.signed
-	cd dist; for change in *.changes; do \
-	  dupload -c --nomail --to ${CODENAME} $${change} && \
-	  rm -f $${change}; \
-	done
-	touch $@
-
-upload-debs upload-deb: dist/debs.uploaded
-
-update-local-apt-repo: dist/debs.signed
-	for change in dist/*.changes; do \
-	  reprepro -Vb ${APTREPO} include ${CODENAME} $${change} && \
-	  rm -f $${change}; \
-	done
-
-update-remote-apt-repo: dist/debs.signed
-	cd dist; for change in *.changes; do \
-	  dupload -c --nomail --to ${CODENAME} $${change} && \
-	  rm -f $${change}; \
-	done
-
-update-apt update-apt-repo: dist/debs.signed
-	if test -d ${APTREPO}; then	\
-	  make update-local-apt-repo;	\
-	else				\
-	  make update-remote-apt-repo;	\
-	fi;
-
-debclean:
-	rm -rf dist/upsource-* dist/debs.* dist/*.deb dist/*.changes
-
-debfresh freshdeb newdeb: debclean
-	make debian
-
-dist/${VERSION}.tar:
-	(git archive --prefix=upsource-${BASEVERSION}/ -o dist/${VERSION}.tar HEAD)
-
-${VERSION}.spec: dist/upsource.spec.in
-	sed ${SPEC_REWRITES} < $< > $@
-
-dist/rpms.built: ${VERSION}.spec dist/${VERSION}.tar
-	rpmbuild -ba \
-		 --define "_sourcedir ${CWD}/dist" \
-	         --define="_rpmdir ${CWD}/dist" \
-	         --define="_srcrpmdir ${CWD}/dist" \
-	         --define="_gpg_name ${GPGID}" \
-	         --define="__gpg ${GPG}" \
-	   ${VERSION}.spec
-	rpm --resign \
-	         --define="_rpmdir ${CWD}" \
-	         --define="_srcrpmdir ${CWD}" \
-	         --define="_gpg_name ${GPGID}" \
-	         --define="__gpg ${GPG}" \
-	   dist/upsource*.rpm dist/noarch/upsource*.rpm
-	touch $@;
-
-rpms buildrpms: dist/rpms.built
-
-dist/yum.updated: dist/rpms.built
-	scp -r dist/${VERSION}.src.rpm dist/noarch ${YUMREPO}
-	ssh ${YUMHOST} ${YUMUPDATE}
-	rm -f dist/${VERSION}.src.rpm dist/noarch/*
-	touch dist/yum.updated
-
-update-yum: dist/yum.updated
-
-rpmclean:
-	rm -rf upsource-*.spec dist/upsource*.tar dist/rpms.*
-	rm -rf dist/*.rpm dist/noarch/*.rpm 
-
-freshrpm freshrpms rpmfresh: rpmclean
-	make rpms
-
 .PHONY: build config_state initscripts clean 			\
 	install-dirs install-config  install-inits 		\
-	install-sysv install-upstart install-systemd 		\
-	debian debs dpkgs debclean debfresh freshdeb newdeb 	\
-	rpms buildrpms rpmclean freshrpms rpmfresh freshrpm 	\
-	upload-debs upload-deb update-apt update-yum
+	install-sysv install-upstart install-systemd
 
 # Maintaining state files
 

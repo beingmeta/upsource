@@ -1,0 +1,58 @@
+# -*- Mode: shell-script; -*-
+MOUNT=$1
+SOURCE=$2
+export UPSOURCE_TRACE=${UPSOURCE_TRACE}
+export RSYNC_OPTS=
+export RSYNC_USER=${RSYNC_USER:-${SSH_USER}}
+
+if test ! -d ${MOUNT}; then
+   mkdir -p ${MOUNT};
+fi;
+if [ -n "${UPSOURCE_OWNER}" ]; then chown "${UPSOURCE_OWNER}" "${MOUNT}"; fi
+if [ -n "${UPSOURCE_GROUP}" ]; then chgrp "${UPSOURCE_GROUP}" "${MOUNT}"; fi
+if [ -n "${UPSOURCE_FILEMODE}" ]; then chmod "${UPSOURCE_FILEMODE}" "${MOUNT}"; fi
+
+if [ -n "${RSYNC_SSH_KEY}" ]; then
+    RSYNC_OPTS="${RSYNC_OPTS} -e 'ssh -i ${RSYNC_SSH_KEY}'";
+fi;
+
+if test -f ${UPSOURCE_LIB}/handlers/pre.cmd; then
+  ${UPSOURCE_LIB}/handlers/pre.cmd;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/pre.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.sh;
+fi;
+
+if test -f ${UPSOURCE_LIB}/handlers/pre.rsync.cmd; then
+  ${UPSOURCE_LIB}/handlers/pre.rsync.cmd;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/pre.rsync.sh; then
+  . ${UPSOURCE_LIB}/handlers/pre.rsync.sh;
+fi;
+
+if test ! -z "${UPSOURCE_TRACE}"; then
+   echo "# (upsource) mount=${MOUNT} source=${SOURCE}" >&2;
+   echo "# (upsource) " "owner=${OWNER} group=${GROUP}" \
+   	"mode=${FILEMODE}" >&2;
+fi
+do_rsync() {
+    if [ -n "${RSYNC_USER}" ]; then
+        rsync ${RSYNC_OPTS} ${RSYNC_USER}@${SOURCE} ${MOUNT};
+    else
+        rsync ${RSYNC_OPTS} ${SOURCE} ${MOUNT};
+    fi;
+}
+if do_rsync; then
+    if test -x ${UPSOURCE_LIB}/handlers/post.cmd; then
+        ${UPSOURCE_LIB}/handlers/post.cmd;
+    fi;
+    if test -f ${UPSOURCE_LIB}/handlers/post.sh; then
+        . ${UPSOURCE_LIB}/handlers/post.sh;
+    fi;
+    if test -x ${UPSOURCE_LIB}/handlers/post.git.cmd; then
+        ${UPSOURCE_LIB}/handlers/post.git.cmd;
+    fi;
+    if test -f ${UPSOURCE_LIB}/handlers/post.git.sh; then
+        . ${UPSOURCE_LIB}/handlers/post.git.sh;
+    fi;
+fi;

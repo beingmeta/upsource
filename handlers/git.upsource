@@ -3,6 +3,7 @@ MOUNT=$1
 SOURCE=$2
 BRANCH=${BRANCH:-master}
 export UPSOURCE_TRACE=${UPSOURCE_TRACE}
+export GIT_USER=${GIT_USER:-git}
 export GIT_HTTP_LOGIN=${GIT_HTTP_LOGIN:-${GIT_LOGIN}}
 export GIT_SSH_USER=${GIT_SSH_USER:-${SSH_USER}}
 export GIT_SSH_KEY=${GIT_SSH_KEY:-${SSH_KEY}}
@@ -40,8 +41,14 @@ if [ -n "${UPSOURCE_OWNER}" ]; then chown "${UPSOURCE_OWNER}" "${MOUNT}"; fi
 if [ -n "${UPSOURCE_GROUP}" ]; then chgrp "${UPSOURCE_GROUP}" "${MOUNT}"; fi
 if [ -n "${UPSOURCE_FILEMODE}" ]; then chmod "${UPSOURCE_FILEMODE}" "${MOUNT}"; fi
 
+if test -x ${UPSOURCE_LIB}/handlers/pre.cmd; then
+  ${UPSOURCE_LIB}/handlers/pre.cmd;
+fi;
 if test -f ${UPSOURCE_LIB}/handlers/pre.sh; then
   . ${UPSOURCE_LIB}/handlers/pre.sh;
+fi;
+if test -x ${UPSOURCE_LIB}/handlers/pre.git.cmd; then
+  ${UPSOURCE_LIB}/handlers/pre.git.cmd;
 fi;
 if test -f ${UPSOURCE_LIB}/handlers/pre.git.sh; then
   . ${UPSOURCE_LIB}/handlers/pre.git.sh;
@@ -58,9 +65,16 @@ if test -d ${MOUNT}/.git; then
 else
    ${GIT} clone -b ${BRANCH} ${SOURCE} ${MOUNT};
 fi;
-if test -f ${UPSOURCE_LIB}/handlers/post.sh; then
-  . ${UPSOURCE_LIB}/handlers/post.sh;
+
+if test -x ${UPSOURCE_LIB}/handlers/post.git.cmd; then
+  ${UPSOURCE_LIB}/handlers/post.git.cmd;
 fi;
 if test -f ${UPSOURCE_LIB}/handlers/post.git.sh; then
   . ${UPSOURCE_LIB}/handlers/post.git.sh;
+fi;
+if test -x ${UPSOURCE_LIB}/handlers/post.cmd; then
+  ${UPSOURCE_LIB}/handlers/post.cmd;
+fi;
+if test -f ${UPSOURCE_LIB}/handlers/post.sh; then
+  . ${UPSOURCE_LIB}/handlers/post.sh;
 fi;
